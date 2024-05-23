@@ -12,10 +12,10 @@ Outra ideia sugerida seria a de desenvolver um sistema monetário para o servido
 
 Conforme o desenvolvimento do projeto, é esperado que novas funcionalidades venham surgindo e implementadas. Sendo assim, é de total incentivo novas sugestões e melhorias no código.
 
-# Por fim
+## Por fim
 
 Esse projeto será realizado ao vivo na Twitch(canal: TechTiribas) e em parceria com os membros do servidor do Discord.
 
-# [Entre no nosso Discord](https://discord.gg/WWPT2xYczy)
+## [Entre no nosso Discord](https://discord.gg/WWPT2xYczy)
 
-![image](https://github.com/rafaeltiribas/techtiribas-discord-bot/assets/bot.png)
+![image](https://github.com/rafaeltiribas/techtiribas-discord-bot/assets/bot)

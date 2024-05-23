@@ -18,4 +18,4 @@ Esse projeto será realizado ao vivo na Twitch(canal: TechTiribas) e em parceria
 
 ## [Entre no nosso Discord](https://discord.gg/WWPT2xYczy)
 
-![image](https://github.com/rafaeltiribas/techtiribas-discord-bot/assets/bot)
+![image](https://github.com/rafaeltiribas/techtiribas-discord-bot/blob/main/assets/bot.png)

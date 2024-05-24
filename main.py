@@ -45,9 +45,9 @@ async def on_message(message: Message) -> None:
     user_message = message.content
     channel = str(message.channel)
     
-    
-    print(f'[{channel}] {username}: "{user_message}"')
-    await send_message(message, user_message)
+    if user_message[0] == '=':
+        print(f'[{channel}] {username}: "{user_message[1:]}"')
+        await send_message(message, user_message[1:])
     
 # Main  entry point
 def main() -> None:

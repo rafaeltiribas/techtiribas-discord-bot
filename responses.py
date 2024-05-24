@@ -17,5 +17,4 @@ def get_response(user_input: str) -> str:
         return f'Dado: {randint(1, 20)}'
     elif 'roadmap da live' in lowered:
         response = requests.get(URL)
-        print(response.text)
         return response.text

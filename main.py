@@ -7,7 +7,7 @@ from dotenv import find_dotenv, load_dotenv
 from commands import hello, roadmap, roll_dice
 
 # GET TOKEN
-load_dotenv(find_dotenv('.env'))
+load_dotenv(find_dotenv('.venv/.env'))
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 # Configurando as necessidades do bot: Ler e enviar mensagens

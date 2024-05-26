@@ -10,9 +10,9 @@ load_dotenv(find_dotenv('.venv/.env'))
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 # Configurando as necessidades do bot: Ler e enviar mensagens
-intests = Intents.default()
-intests.message_content = True
-client = Client(intents=intests)
+intents = Intents.default()
+intents.message_content = True
+client = Client(intents=intents)
 
 
 # Funcionalidades de mensagem

@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "my_package"
+version = "0.1.0"
+description = "Bot do Discord do TechTiribas."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "discord.py",
+    "requests",
+    "python-dotenv"
+]
+
+[project.optional-dependencies]
+dev = [
+    "taskipy",
+    "ruff"
+]
+
+[project.urls]
+homepage = "https://github.com/rafaeltiribas/techtiribas-discord-bot"
+documentation = "https://github.com/rafaeltiribas/techtiribas-discord-bot/blob/main/README.md"
+
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+preview = true
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["I", "F", "E", "W", "PL", "PT"]
+
+[tool.taskipy.tasks]
+lint = "ruff check . && ruff check . --diff"
+format = "ruff check . --fix && ruff format ."
+run = "python main.py"

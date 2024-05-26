@@ -50,7 +50,7 @@ Para ajudar no desenvolvimento aqui estao algumas automações:
 ```bash
 task run # roda o script
 task lint # roda o linter
-format # roda o formatador
+task format # roda o formatador
 ```
 
 ## Por fim

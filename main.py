@@ -21,6 +21,7 @@ class TiribasBot(com.Bot):
     async def on_ready(self):
         """Evento de inicialização."""
         print(f'{self.user} está rodando')
+        await self.tree.sync()
 
     async def on_command_error(self, ctx, error) -> None:
         """Lida com erros no comando."""

@@ -32,6 +32,7 @@ class TiribasBot(com.Bot):
 
 bot = TiribasBot(command_prefix='/', intents=intents)
 
+commands.setup(bot)
 
 if __name__ == '__main__':
     bot.run(TOKEN)

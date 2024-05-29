@@ -1,21 +1,21 @@
 import os
 
 from discord import Intents
-from discord.ext import commands
+from discord.ext import commands as com
 from dotenv import find_dotenv, load_dotenv
 
-from commands import hello, roadmap, roll_dice
+import commands
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 # Configurando as necessidades do bot: Ler e enviar mensagens
-intents = Intents.default()
+intents = Intents.all()
 intents.message_content = True
 
 
-class MyBot(commands.Bot):
+class TiribasBot(com.Bot):
     """Estende a classe base Bot."""
 
     async def on_ready(self):
@@ -25,14 +25,11 @@ class MyBot(commands.Bot):
     async def on_command_error(self, ctx, error) -> None:
         """Lida com erros no comando."""
         print(error)
-        if isinstance(error, commands.errors.CommandError):
-            await ctx.send('Alguma coisa deu errado ao executar esse comando.')
+        if isinstance(error, com.errors.CommandError):
+            await ctx.send('Alguma coisa deu errado ao executar esse comando. Fale com os adms')
 
 
-bot = MyBot(command_prefix='=', intents=intents)
-bot.add_command(hello)
-bot.add_command(roll_dice)
-bot.add_command(roadmap)
+bot = TiribasBot(command_prefix='/', intents=intents)
 
 
 if __name__ == '__main__':

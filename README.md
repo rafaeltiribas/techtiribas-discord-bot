@@ -53,6 +53,34 @@ task lint # roda o linter
 task format # roda o formatador
 ```
 
+## Estrutura Básica de código do Bot
+<hr>
+
+Como pode ver, na raiz do projeto voce encontra o ```main.py``` e ```commands.py```
+
+#### main.py
+
+Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```commands.py``` com:
+```python
+commands.setup(bot)
+```
+
+#### commands.py
+Onde se localiza a maioria dos comandos do bot.
+
+Para criar novos comandos, use a anotação
+```python
+@com.hybrid_command(help="mensagem de descrição do comando")
+async def nome_do_comando(ctx: com.Context):
+```
+
+depois adicione o mesmo em:
+
+```python
+def setup(bot):
+    bot.add_command(nome_do_comando) # <-- preencha nos parenteses o nome do def do comando
+```
+
 ## Por fim
 
 Esse projeto será realizado ao vivo na Twitch(canal: TechTiribas) e em parceria com os membros do servidor do Discord.

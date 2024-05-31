@@ -7,6 +7,13 @@
 <hr>
 O objetivo deste projeto é desenvolver um bot para a plataforma Discord com o objetivo de automatizar algumÍas ações dos usuários e adicionar algumas novas funcionalidades ao servidor. Além disso, ele poderá integrar-se com outras plataformas e APIs para expandir suas funcionalidades, tornando-se uma ferramenta versátil e útil para administradores e membros de servidores Discord.
 
+## Sumário
+<hr>
+- [Funcionalidades](#funcionalidades)
+- [Como executar o projeto](#como-executar-o-projeto)
+- [Estrutura básica do bot](#estrutura-básica-de-código-do-bot)
+- [Por fim](#por-fim)
+
 ## Funcionalidades
 <hr>
 Uma das funcionalidades esperadas que o bot realize é a de automatizar as notificações de lives e vídeos novos do canal TechTiribas na Twitch e Youtube. 
@@ -56,14 +63,17 @@ task format # roda o formatador
 ## Estrutura Básica de código do Bot
 <hr>
 
-Como pode ver, na raiz do projeto voce encontra o ```main.py``` e ```commands.py```
+Como pode ver, na raiz do projeto voce encontra o ```main.py``` e o diretório ```src```
 
 #### main.py
 
-Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```commands.py``` com:
+Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```src/commands.py``` com:
 ```python
 commands.setup(bot)
 ```
+#### o diretório ```src```
+
+Onde fica localizado todo o restante do código, a partir daqui crie novas funcionalidades ou realize ajustes
 
 #### commands.py
 Onde se localiza a maioria dos comandos do bot.

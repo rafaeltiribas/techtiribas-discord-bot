@@ -1,5 +1,6 @@
 from src.models.user import User
 from src.models.wallet import Wallet
+from src.models.transaction_history import TransactionHistory, TransactionType
 
 
 class UserService:
@@ -18,4 +19,5 @@ class UserService:
 	
 	def create_wallet_for_user(self, user, balance=300.0):
 		wallet = Wallet(user=user, balance=balance)
+		TransactionHistory(wallet=wallet, value=balance, type_transaction=TransactionType.START.name, description="Start new register")
 		return wallet

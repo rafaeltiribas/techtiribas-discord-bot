@@ -4,11 +4,11 @@
 # TECHTIRIBAS BOT
 
 ## Objetivo
-
+<hr>
 O objetivo deste projeto é desenvolver um bot para a plataforma Discord com o objetivo de automatizar algumÍas ações dos usuários e adicionar algumas novas funcionalidades ao servidor. Além disso, ele poderá integrar-se com outras plataformas e APIs para expandir suas funcionalidades, tornando-se uma ferramenta versátil e útil para administradores e membros de servidores Discord.
 
 ## Funcionalidades
-
+<hr>
 Uma das funcionalidades esperadas que o bot realize é a de automatizar as notificações de lives e vídeos novos do canal TechTiribas na Twitch e Youtube. 
 
 Outra ideia sugerida seria a de desenvolver um sistema monetário para o servidor, que conectado a uma API seja possível realizar apostas nos chats com uma moeda fictícia(Bytes).
@@ -16,7 +16,7 @@ Outra ideia sugerida seria a de desenvolver um sistema monetário para o servido
 Conforme o desenvolvimento do projeto, é esperado que novas funcionalidades venham surgindo e implementadas. Sendo assim, é de total incentivo novas sugestões e melhorias no código.
 
 ## Como executar o projeto
-
+<hr>
 Para executar o projeto, clone o repositório:
 
 ```bash
@@ -51,6 +51,34 @@ Para ajudar no desenvolvimento aqui estao algumas automações:
 task run # roda o script
 task lint # roda o linter
 task format # roda o formatador
+```
+
+## Estrutura Básica de código do Bot
+<hr>
+
+Como pode ver, na raiz do projeto voce encontra o ```main.py``` e ```commands.py```
+
+#### main.py
+
+Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```commands.py``` com:
+```python
+commands.setup(bot)
+```
+
+#### commands.py
+Onde se localiza a maioria dos comandos do bot.
+
+Para criar novos comandos, use a anotação
+```python
+@com.hybrid_command(help="mensagem de descrição do comando")
+async def nome_do_comando(ctx: com.Context):
+```
+
+depois adicione o mesmo em:
+
+```python
+def setup(bot):
+    bot.add_command(nome_do_comando) # <-- preencha nos parenteses o nome do def do comando
 ```
 
 ## Por fim

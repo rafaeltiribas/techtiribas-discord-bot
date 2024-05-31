@@ -1,4 +1,3 @@
-
 ![image](https://github.com/rafaeltiribas/techtiribas-discord-bot/blob/main/assets/bot.png)
 
 # TECHTIRIBAS BOT
@@ -6,13 +5,6 @@
 ## Objetivo
 <hr>
 O objetivo deste projeto é desenvolver um bot para a plataforma Discord com o objetivo de automatizar algumÍas ações dos usuários e adicionar algumas novas funcionalidades ao servidor. Além disso, ele poderá integrar-se com outras plataformas e APIs para expandir suas funcionalidades, tornando-se uma ferramenta versátil e útil para administradores e membros de servidores Discord.
-
-## Sumário
-<hr>
-- [Funcionalidades](#funcionalidades)
-- [Como executar o projeto](#como-executar-o-projeto)
-- [Estrutura básica do bot](#estrutura-básica-de-código-do-bot)
-- [Por fim](#por-fim)
 
 ## Funcionalidades
 <hr>

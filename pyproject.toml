@@ -10,9 +10,10 @@ description = "Bot do Discord do TechTiribas."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "discord.py",
-    "requests",
-    "python-dotenv"
+    "discord.py==2.3.2",
+    "requests==2.32.2",
+    "python-dotenv==1.0.1",
+    "SQLAlchemy==2.0.30"
 ]
 
 [project.optional-dependencies]

@@ -10,6 +10,8 @@ import requests
 from discord.ext import commands as com
 import time
 
+from src.services.user_service import UserService
+
 ROADMAP_URL = 'https://raw.githubusercontent.com/rafaeltiribas/techtiribas/main/roadmap/README.md'
 
 
@@ -41,9 +43,17 @@ async def ping(ctx: com.Context):
 
     await msg.edit(content=f"pong! Latência está em {ms:.2f} ms")
 
+@com.hybrid_command(help="Faça seu cadastro no Bot")
+async def register(ctx: com.Context):
+    msg = await ctx.send("Registrando...")
+    service = UserService()
+    msg_resp = service.register_user_from_ctx(ctx)
+    await msg.edit(content=msg_resp)
+    
 def setup(bot):
     """defina aqui os comandos no bot"""
     bot.add_command(ping)
     bot.add_command(roadmap)
     bot.add_command(dice)
     bot.add_command(salve)
+    bot.add_command(register)

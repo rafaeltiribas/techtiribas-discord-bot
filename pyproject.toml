@@ -13,7 +13,7 @@ dependencies = [
     "discord.py",
     "requests",
     "python-dotenv",
-    "SQLAlchemy"
+    "SQLObject==3.11.0"
 ]
 
 [project.optional-dependencies]

@@ -1,4 +1,6 @@
-class User:
+from sqlobject import SQLObject, StringCol, MultipleJoin
+
+class User(SQLObject):
   """
     Cada usuário terá uma Role
 
@@ -13,8 +15,9 @@ class User:
     "Admin": ["member", "subscriber", "admin"],
     "Council": ["member", "subscriber", "admin", "council"]
   }
-
-  def __init__(self, id_discord, username, role=None):
-    self.id_discord = id_discord
-    self.username = username
-    self.role = role or User.ROLE["Member"]
+  
+  # Atributos do model
+  id_discord = StringCol(unique=True)
+  username = StringCol(unique=True)
+  role = StringCol()
+  wallet = MultipleJoin('Wallet')

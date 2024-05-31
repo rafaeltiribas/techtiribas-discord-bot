@@ -1,4 +1,5 @@
 from enum import Enum
+from sqlobject import SQLObject, StringCol, ForeignKey, FloatCol
 
 class TransactionType(Enum):
   START = 0
@@ -9,9 +10,9 @@ class TransactionType(Enum):
   PAYMENT = 5
   PURCHASE = 6
 
-class TransactionHystory:
-  def __init__(self, id_wallet, value, type_transaction, description=None):
-    self.id_wallet = id_wallet
-    self.value = value
-    self.type_transaction = type_transaction or TransactionType.START
-    self.description = description
+
+class TransactionHistory(SQLObject):
+  wallet = ForeignKey('Wallet')  # Chave estrangeira para Wallet
+  value = FloatCol()
+  type_transaction = StringCol()
+  description = StringCol()

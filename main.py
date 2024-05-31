@@ -4,7 +4,7 @@ from discord import Intents
 from discord.ext import commands as com
 from dotenv import find_dotenv, load_dotenv
 
-import commands
+from src import commands
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))

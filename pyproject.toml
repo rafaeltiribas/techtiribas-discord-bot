@@ -4,16 +4,16 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "my_package"
-version = "0.1.0"
+name = "techtiribas-discord-bot"
+version = "0.2.0"
 description = "Bot do Discord do TechTiribas."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "discord.py==2.3.2",
-    "requests==2.32.2",
-    "python-dotenv==1.0.1",
-    "SQLAlchemy==2.0.30"
+    "discord.py",
+    "requests",
+    "python-dotenv",
+    "SQLAlchemy"
 ]
 
 [project.optional-dependencies]

@@ -16,8 +16,19 @@ class User(SQLObject):
     "Council": ["member", "subscriber", "admin", "council"]
   }
   
+  HIERARCHY = {
+    "Council": 4,
+    "Admin": 3,
+    "Subscriber": 2,
+    "Member": 1
+  }
+  
   # Atributos do model
   id_discord = StringCol(unique=True)
   username = StringCol(unique=True)
   role = StringCol()
   wallet = MultipleJoin('Wallet')
+  
+  @staticmethod
+  def is_valid_role(role_str):
+    return role_str in User.ROLE

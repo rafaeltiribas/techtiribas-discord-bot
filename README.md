@@ -1,4 +1,3 @@
-
 ![image](https://github.com/rafaeltiribas/techtiribas-discord-bot/blob/main/assets/bot.png)
 
 # TECHTIRIBAS BOT
@@ -56,14 +55,17 @@ task format # roda o formatador
 ## Estrutura Básica de código do Bot
 <hr>
 
-Como pode ver, na raiz do projeto voce encontra o ```main.py``` e ```commands.py```
+Como pode ver, na raiz do projeto voce encontra o ```main.py``` e o diretório ```src```
 
 #### main.py
 
-Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```commands.py``` com:
+Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```src/commands.py``` com:
 ```python
 commands.setup(bot)
 ```
+#### o diretório ```src```
+
+Onde fica localizado todo o restante do código, a partir daqui crie novas funcionalidades ou realize ajustes
 
 #### commands.py
 Onde se localiza a maioria dos comandos do bot.

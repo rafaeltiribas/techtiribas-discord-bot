@@ -3,8 +3,9 @@ import os
 from discord import Intents
 from discord.ext import commands as com
 from dotenv import find_dotenv, load_dotenv
+from db import database_config
 
-import commands
+from src import commands
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))
@@ -14,6 +15,8 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = Intents.all()
 intents.message_content = True
 
+database_config.init_db()
+database_config.create_tables()
 
 class TiribasBot(com.Bot):
     """Estende a classe base Bot."""

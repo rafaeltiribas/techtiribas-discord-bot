@@ -8,12 +8,14 @@ from random import randint
 
 import requests
 from discord.ext import commands as com
+from discord import app_commands
 import time
 
 from src.services.user_service import UserService
 
 ROADMAP_URL = 'https://raw.githubusercontent.com/rafaeltiribas/techtiribas/main/roadmap/README.md'
 
+usr_service = UserService()
 
 @com.hybrid_command(help='Responde uma saudação.')
 async def salve(ctx):

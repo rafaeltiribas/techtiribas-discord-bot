@@ -1,4 +1,4 @@
-from src.models.user import User
+from src.models.user import User, Role
 from src.models.wallet import Wallet
 from src.models.transaction_history import TransactionHistory, TransactionType
 import db.database_config as db
@@ -9,9 +9,8 @@ class UserService:
 		try:
 			if self.get_user_by_ctx(ctx) is not None:
 				return 'Você já está cadastrado! use **/** para ver outros comandos'
-			user_id = str(ctx.author.id)
-			username = ctx.author.name
-			user = self.add_user(user_id, username, User.ROLE["Member"])
+
+			user = self.save_user(str(ctx.author.id), ctx.author.name)
 			wallet = self.create_wallet_for_user(user)
 			con.commit()
 			return f'Você foi Resgistrado! agora você possui uma carteira com {wallet.balance} Bytes!'
@@ -30,8 +29,9 @@ class UserService:
 			O solicitante é um Council , então pode alterar para Admin, Subscriber e Member
 	"""
 	def update_user_role(self, ctx, at_sign_user: str, role: str):
+		role = role.capitalize()
 		"""Valida se a Role existe registrada"""
-		if not User.is_valid_role(role):
+		if not Role.is_valid(role):
 			return f'Função {role} não é válida.'
 		
 		"""Valida se usuário marcado existe"""
@@ -44,12 +44,17 @@ class UserService:
 		if usr_updt.id_discord == requesting_user.id_discord:
 			return "Você não pode alterar a sua própria função!"
 		
-		comparison = self.compare_hieranchy(requesting_user, usr_updt)
+		comparison = User.compare_roles(requesting_user.role, usr_updt.role)
 		
 		"""Valida se o Usuario que gerou o comando tem Role maior ao que vai alterar"""
-		if comparison < 0:
-			return "Você não tem autorização para alterar função deste usuário"
-		
+		if "council" not in requesting_user.role.split(','):
+			if comparison < 0:
+				return "Você não tem autorização para alterar função deste usuário"
+			
+			compare_future_role = User.compare_roles(requesting_user.role, role)
+			if compare_future_role <= 0:
+				return "Você não pode alterar para uma Função maior ou igual a sua!"
+				
 		try:
 			con = db.open_transaction()
 			usr_updated = self.update_user(usr_updt, role)
@@ -62,20 +67,18 @@ class UserService:
 			con.rollback()
 			return f'Não foi possível alterar o Usuário {usr_updt.username}. Fale com os Adm'
 		
-	def add_user(self, id_discord, username, role):
-		role_str = ','.join(role)
-		user = User(id_discord=id_discord, username=username, role=role_str)
+	def save_user(self, id_discord, username):
+		user = User(id_discord=id_discord, username=username, role=Role.Member.name)
 		return user
 	
 	def update_user(self, user, new_role):
 		if user is None:
 			raise ValueError(f'Usuário {user} não encontrado!')
 		
-		if not User.is_valid_role(new_role):
+		if not Role.is_valid(new_role):
 			raise ValueError(f'Função {new_role} não é válida')
 		
-		user.role = ','.join(User.ROLE[new_role])
-		
+		user.role = Role[new_role].name
 		return user
 	
 	def create_wallet_for_user(self, user, balance=300.0):
@@ -95,8 +98,3 @@ class UserService:
 	
 	def get_user_by_discord_id(self, id_discord):
 		return User.selectBy(id_discord=id_discord).getOne(None)
-	
-	def compare_hieranchy(self, user1, user2):
-		hierarchy1 = User.HIERARCHY.get(user1.role, 0)
-		hierarchy2 = User.HIERARCHY.get(user2.role, 0)
-		return hierarchy1 - hierarchy2

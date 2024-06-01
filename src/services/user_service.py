@@ -55,9 +55,12 @@ class UserService:
 			usr_updated = self.update_user(usr_updt, role)
 			con.commit()
 			return f'Usuario {usr_updated.username} atualizado com sucesso!'
+		except ValueError as ve:
+			con.rollback()
+			return ve
 		except Exception as e:
 			con.rollback()
-			return f'Não foi possível alterar o Usuário @<{usr_updt.id_discord}>. Fale com os Adm'
+			return f'Não foi possível alterar o Usuário {usr_updt.username}. Fale com os Adm'
 		
 	def add_user(self, id_discord, username, role):
 		role_str = ','.join(role)
@@ -66,10 +69,10 @@ class UserService:
 	
 	def update_user(self, user, new_role):
 		if user is None:
-			raise ValueError(f"Usuário não encontrado!")
+			raise ValueError(f'Usuário {user} não encontrado!')
 		
 		if not User.is_valid_role(new_role):
-			raise ValueError(f"Função '{new_role}' não é válida")
+			raise ValueError(f'Função {new_role} não é válida')
 		
 		user.role = ','.join(User.ROLE[new_role])
 		

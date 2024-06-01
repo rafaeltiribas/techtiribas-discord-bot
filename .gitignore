@@ -234,3 +234,7 @@ fabric.properties
 
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm+all
+
+
+# Database
+techtiribas_bot.db

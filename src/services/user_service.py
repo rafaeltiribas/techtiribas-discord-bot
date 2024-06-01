@@ -79,3 +79,21 @@ class UserService:
 		wallet = Wallet(user=user, balance=balance)
 		TransactionHistory(wallet=wallet, value=balance, type_transaction=TransactionType.START.name, description="Start new register")
 		return wallet
+	
+	def get_user_by_ctx(self, ctx):
+		return self.get_user_by_discord_id(str(ctx.author.id))
+	
+	def get_user_by_username(self, username):
+		return User.selectBy(username=username).getOne(None)
+	
+	def get_user_from_at_sign(self, at_sign_user):
+		dc_id = at_sign_user.replace('<', '').replace('>', '').replace('@', '')
+		return self.get_user_by_discord_id(dc_id)
+	
+	def get_user_by_discord_id(self, id_discord):
+		return User.selectBy(id_discord=id_discord).getOne(None)
+	
+	def compare_hieranchy(self, user1, user2):
+		hierarchy1 = User.HIERARCHY.get(user1.role, 0)
+		hierarchy2 = User.HIERARCHY.get(user2.role, 0)
+		return hierarchy1 - hierarchy2

@@ -32,7 +32,7 @@ async def dice(ctx):
 @com.hybrid_command(help='Mostra o roadmap das lives.')
 async def roadmap(ctx):
     """Mostra o roadmap das lives."""
-    await ctx.send(requests.get(ROADMAP_URL))
+    await ctx.send(requests.get(ROADMAP_URL), mention_author=True)
 
 
 @com.hybrid_command(help="Dá um ping, toma um pong")
@@ -47,9 +47,8 @@ async def ping(ctx: com.Context):
 
 @com.hybrid_command(help="Faça seu cadastro no Bot")
 async def register(ctx: com.Context):
-    msg = await ctx.send("Registrando...")
-    service = UserService()
-    msg_resp = service.register_user_from_ctx(ctx)
+    msg = await ctx.send("Registrando...", mention_author=True)
+    msg_resp = usr_service.register_user_from_ctx(ctx)
     await msg.edit(content=msg_resp)
     
 def setup(bot):

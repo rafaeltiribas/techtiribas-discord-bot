@@ -7,10 +7,7 @@ from src.models.transaction_history import TransactionHistory
 import os
 
 def init_db():
-    db_file = 'techtiribas_bot.db'
-    db_path = os.path.abspath(db_file)
-    connection = connectionForURI(f'sqlite:///{db_path}')
-    sqlhub.processConnection = connection
+    sqlhub.processConnection = get_connection()
     
 def create_tables():
     User.createTable(ifNotExists=True)

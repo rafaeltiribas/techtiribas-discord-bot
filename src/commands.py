@@ -51,6 +51,15 @@ async def register(ctx: com.Context):
     msg_resp = usr_service.register_user_from_ctx(ctx)
     await msg.edit(content=msg_resp)
     
+
+@com.hybrid_command('alterar_funcao', help="Altere um usuário para Member, Subscriber ou Admin")
+@app_commands.describe(username="Marque o usuário", role="Member, Subscriber ou Admin")
+async def update_role_user(ctx: com.Context, username: str, role: str):
+    msg = await ctx.send(f'Alterando user {username}...', mention_author=True)
+    msg_resp = usr_service.update_user_role(ctx, username, role)
+    await msg.edit(content=msg_resp)
+    
+    
 def setup(bot):
     """defina aqui os comandos no bot"""
     bot.add_command(ping)

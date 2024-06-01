@@ -67,3 +67,4 @@ def setup(bot):
     bot.add_command(dice)
     bot.add_command(salve)
     bot.add_command(register)
+    bot.add_command(update_role_user)

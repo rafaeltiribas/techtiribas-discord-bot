@@ -13,7 +13,8 @@ dependencies = [
     "discord.py",
     "requests",
     "python-dotenv",
-    "SQLObject==3.11.0"
+    "SQLObject==3.11.0",
+    "APScheduler==3.10.4"
 ]
 
 [project.optional-dependencies]

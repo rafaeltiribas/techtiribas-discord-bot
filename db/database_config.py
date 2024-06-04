@@ -17,6 +17,8 @@ def create_tables():
     Wallet.createTable(ifNotExists=True)
     TransactionHistory.createTable(ifNotExists=True)
     BotBank.createTable(ifNotExists=True)
+    UserInteractions.createTable(ifNotExists=True)
+    UserInteractionsHistory.createTable(ifNotExists=True)
     
 def open_transaction():
     con = get_connection()

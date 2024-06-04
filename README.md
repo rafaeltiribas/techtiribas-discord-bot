@@ -59,16 +59,17 @@ Como pode ver, na raiz do projeto voce encontra o ```main.py``` e o diretório `
 
 #### main.py
 
-Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```src/commands.py``` com:
+Onde se dá o "start" no bot, sincroniza os comandos, mostra mensagens de erro e inicia o ```src/commands/commands.py``` com:
 ```python
 commands.setup(bot)
 ```
+Não só eles mas os outros comandos também, todos os .py que finalizam com ```_commands.py```
 #### o diretório ```src```
 
 Onde fica localizado todo o restante do código, a partir daqui crie novas funcionalidades ou realize ajustes
 
 #### commands.py
-Onde se localiza a maioria dos comandos do bot.
+Onde se localiza a maioria dos comandos do bot. Mas há outros ```_commands.py``` , estão localizados em ```src/commands/``` e funcionam do mesmo jeito.
 
 Para criar novos comandos, use a anotação
 ```python
@@ -82,6 +83,31 @@ depois adicione o mesmo em:
 def setup(bot):
     bot.add_command(nome_do_comando) # <-- preencha nos parenteses o nome do def do comando
 ```
+
+## Bot Bank
+
+O bot contém um "banco" no qual de acordo com um cron expression, ele executa um aumento percentual em todas as carteiras dos usuários. Algo
+como se fosse um "CDB" .
+
+#### Transferencias entre Usuários
+
+O ```user``` consegue transferir para outro ```user``` uma quantidade de bytes, o bot valida se os dois ```users``` existem, se o saldo de bytes é maior que o solicitado para transferencia e até se a transferencia não é para ele mesmo. 
+
+O comando atualmente é **/transferir_bytes** onde o user deve preencher marcando o user que vai receber a transferencia e o valor em bytes que será transferido.
+
+Cheque o ```src/services/wallet_service.py``` no def ```transferir_bytes_para``` para entender melhor.
+
+#### Jobs executados de acordo com Cron expressions
+Como citado antes, o bot usa ```cron expressions``` para executar uma tarefa. Existe um service chamado ```jobs_service.py``` que cuida disso.
+
+#### Wallets 
+Cada ```user``` contém uma ```wallet``` (carteira) onde é armazenado o valor em bytes do usuário. Existe um comando **/bytes** que mostra o saldo
+
+## Embed messages
+
+O bot é capaz de mandar embed messages, que são aquelas mensagens destacadas que contém uma barra colorida na lateral esquerda da mesma. O ```messages.py``` é o responsável por criar e enviar essas mensagens.
+
+Para entender melhor, busque pelo comando **/bytes** por exemplo, para ver como ele funciona ;)
 
 ## Por fim
 

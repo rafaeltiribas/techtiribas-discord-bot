@@ -14,7 +14,9 @@ dependencies = [
     "requests",
     "python-dotenv",
     "SQLObject==3.11.0",
-    "APScheduler==3.10.4"
+    "APScheduler==3.10.4",
+    "croniter==2.0.5",
+    "colorama==0.4.6"
 ]
 
 [project.optional-dependencies]

@@ -6,7 +6,7 @@ def print_colored(text, color):
     print(color + str(text) + Style.RESET_ALL)
 
 def info(text):
-    print_colored(text, Fore.BLUE)
+    print_colored(text, Fore.GREEN)
 
 def warn(text):
     print_colored(text, Fore.YELLOW)

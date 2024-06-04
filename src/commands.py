@@ -12,10 +12,12 @@ from discord import app_commands
 import time
 
 from src.services.user_service import UserService
+from src.services.wallet_service import WalletService
 
 ROADMAP_URL = 'https://raw.githubusercontent.com/rafaeltiribas/techtiribas/main/roadmap/README.md'
 
 usr_service = UserService()
+wallet_service = WalletService()
 
 @com.hybrid_command(help='Responde uma saudação.')
 async def salve(ctx):
@@ -59,7 +61,15 @@ async def update_role_user(ctx: com.Context, username: str, role: str):
     msg_resp = usr_service.update_user_role(ctx, username, role)
     await msg.edit(content=msg_resp)
     
-    
+@com.hybrid_command('bytes', help="Consulte seu saldo de Bytes e ganhe um premio")
+async def consulting_bytes(ctx: com.Context):
+    try:
+        msg = wallet_service.get_balance_wallet(ctx)
+        await ctx.send("Vou te mandar seu saldo no pv!")
+        await ctx.author.send(content=msg)
+    except Exception as e:
+        raise e
+
 def setup(bot):
     """defina aqui os comandos no bot"""
     bot.add_command(ping)
@@ -68,3 +78,4 @@ def setup(bot):
     bot.add_command(salve)
     bot.add_command(register)
     bot.add_command(update_role_user)
+    bot.add_command(consulting_bytes)

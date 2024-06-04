@@ -8,7 +8,7 @@ from db import database_config
 from src.services.bot_bank_service import BotBankService
 from src.services.user_interactions_service import UserInteractionsService
 
-from src.commands import commands, admin_commands
+from src.commands import commands, admin_commands, wallet_commands
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))
@@ -27,25 +27,26 @@ interactions.init_bank()
 interactions.start_schedules()
 
 class TiribasBot(com.Bot):
-    """Estende a classe base Bot."""
-
-    async def on_ready(self):
-        """Evento de inicialização."""
-        LOG.info_highlighted(f'{self.user} está rodando')
-        await self.tree.sync()
-
-    async def on_command_error(self, ctx, error) -> None:
-        """Lida com erros no comando."""
-        LOG.error(error)
-        if isinstance(error, com.errors.CommandNotFound):
-            await ctx.send(f'eu não conheço esse comando :thinking: ')
-        elif isinstance(error, com.errors.CommandError):
-            await ctx.send('Alguma coisa deu errado ao executar esse comando! Fale com os adms :rotating_light:')
+	"""Estende a classe base Bot."""
+	
+	async def on_ready(self):
+		"""Evento de inicialização."""
+		LOG.info_highlighted(f'{self.user} está rodando')
+		await self.tree.sync()
+	
+	async def on_command_error(self, ctx, error) -> None:
+		"""Lida com erros no comando."""
+		LOG.error(error)
+		if isinstance(error, com.errors.CommandNotFound):
+			await ctx.send(f'eu não conheço esse comando :thinking: ')
+		elif isinstance(error, com.errors.CommandError):
+			await ctx.send('Alguma coisa deu errado ao executar esse comando! Fale com os adms :rotating_light:')
 
 bot = TiribasBot(command_prefix='/', intents=intents)
 
 commands.setup(bot)
 admin_commands.setup(bot)
+wallet_commands.setup(bot)
 
 if __name__ == '__main__':
-    bot.run(TOKEN)
+	bot.run(TOKEN)

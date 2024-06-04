@@ -46,12 +46,15 @@ def gen_embed_message(
 	return embed_msg
 
 
-async def send_with_img(ctx, embed_message, img_name) -> None:
+async def send_embed_with_img(ctx, embed_message, img_name, only_author_can_see) -> None:
 	img_path = os.path.abspath(f'assets/{img_name}')
 	if os.path.isfile(img_path):
 		with open(img_path, 'rb') as f:
 			picture = discord.File(f, filename=img_name)
 			embed_message.set_image(url=f"attachment://{img_name}")
-			await ctx.author.send(embed=embed_message, file=picture)
+			await ctx.send(embed=embed_message, file=picture, ephemeral=only_author_can_see)
 	else:
-		await ctx.author.send(embed=embed_message)
+		await ctx.send(embed=embed_message, ephemeral=only_author_can_see)
+
+async def send_msg(ctx, msg, only_author_can_see=False) -> None:
+	await ctx.send(msg, ephemeral=only_author_can_see)

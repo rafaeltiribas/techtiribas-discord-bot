@@ -100,3 +100,10 @@ class UserService:
 	
 	def get_user_by_discord_id(self, id_discord):
 		return User.selectBy(id_discord=id_discord).getOne(None)
+	
+	def user_is_admin_or_higher(self, ctx) -> bool:
+		user = self.get_user_by_ctx(ctx)
+		if user is not None:
+			return Role.__getitem__(user.role).value >= Role.Admin.value
+		else:
+			return False

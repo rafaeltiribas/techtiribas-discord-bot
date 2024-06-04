@@ -1,4 +1,5 @@
 import discord
+import os
 from typing import Dict, Optional
 
 
@@ -43,3 +44,14 @@ def gen_embed_message(
 		embed_msg.set_image(url=url_img)
 	
 	return embed_msg
+
+
+async def send_with_img(ctx, embed_message, img_name) -> None:
+	img_path = os.path.abspath(f'assets/{img_name}')
+	if os.path.isfile(img_path):
+		with open(img_path, 'rb') as f:
+			picture = discord.File(f, filename=img_name)
+			embed_message.set_image(url=f"attachment://{img_name}")
+			await ctx.author.send(embed=embed_message, file=picture)
+	else:
+		await ctx.author.send(embed=embed_message)

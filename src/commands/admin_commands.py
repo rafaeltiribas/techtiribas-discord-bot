@@ -25,7 +25,7 @@ async def kill_jobs(ctx):
         footer=f"Executed by {ctx.author.name}",
         # url_img=""
     )
-    await ctx.author.send(embed=embed)
+    await message.send_with_img(ctx, embed, 'admin.gif')
 
 
 @com.hybrid_command('get_job', help='Sobre um job')

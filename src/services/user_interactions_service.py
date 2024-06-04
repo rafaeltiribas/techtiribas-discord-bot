@@ -1,18 +1,19 @@
 from src.models.user_interactions import UserInteractionsHistory, UserInteractions
 from src.models.user import User
 import src.utils.cron_expressions as cron_exp
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 from datetime import datetime
+from src.services.jobs_service import JobsService
 import src.utils.log as LOG
 
 class UserInteractionsService:
+	
+	jobs_service = JobsService()
 		
 	def init_bank(self):
 		self.user_interaction_config = UserInteractions.select().getOne(None)
 		if self.user_interaction_config is None:
 			cron = "0 3 * * *"
-			LOG.info(f'Configuracao de limpeza de interacoes do usuário marcada para {cron_exp.get_datetime(cron)}')
+			LOG.info(f'Configuracao de limpeza de interacoes do usuário criada e marcada para {cron_exp.get_datetime(cron)}')
 			self.user_interaction_config = UserInteractions(
 				cron_execute_periodic_cleaning=cron
 			)
@@ -35,18 +36,14 @@ class UserInteractionsService:
 		else:
 			return True
 	
+	def get_config_interactions(self):
+		return UserInteractions.select().getOne(None)
+	
 	"""Inicia schedules"""
 	def start_schedules(self):
-		self.sched = BackgroundScheduler()
-		self.trigger = CronTrigger.from_crontab(self.user_interaction_config.cron_execute_periodic_cleaning)
-		self.execute_cron_tasks()
-		
-	def execute_cron_tasks(self):
-		id = "periodic_cleaning"
-		if not self.sched.get_job(id):
-			self.sched.add_job(self.realize_periodic_cleaning, self.trigger, id=id)
-			self.sched.start()
+		self.jobs_service.new_job("periodic_cleaning", self.get_config_interactions().cron_execute_periodic_cleaning,
+		                          self.realize_periodic_cleaning)
 	
 	def realize_periodic_cleaning(self):
-		UserInteractionsHistory.deleteAll()
+		UserInteractionsHistory.deleteMany(None)
 		LOG.info_highlighted("Limpeza de interacoes dos usuários foram feitas com sucesso")

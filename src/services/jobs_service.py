@@ -26,21 +26,34 @@ class JobsService:
 	"""
 	def new_job(self, job_id, cron_expression, def_to_execute):
 		trigger = CronTrigger.from_crontab(cron_expression)
-		if not self.scheduler.get_job(job_id):
-			self.scheduler.add_job(def_to_execute, trigger, id=job_id)
+		if self.scheduler.get_job(job_id) is None:
 			try:
+				self.scheduler.add_job(def_to_execute, trigger, id=job_id)
 				self.scheduler.start()
+				LOG.info(f'Novo job registrado: {job_id}')
 			except SchedulerAlreadyRunningError:
-				LOG.warn_highlighted(f"Já existe um job '{job_id}' em execução.")
+				LOG.warn(f"Já existe um job '{job_id}' em execução.")
 
+	def get_especific_job(self, job_id):
+		job = self.scheduler.get_job(job_id)
+		msg = f"Não foi encontrado o job '{job_id}'"
+		if job is not None:
+			msg = f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}"
+		return msg
+	
+	
 	def get_job(self, job_id):
 		return self.scheduler.get_job(job_id)
 	
 	def list_jobs(self):
 		jobs = self.scheduler.get_jobs()
-		LOG.info_highlighted("Lista de Jobs:")
-		for job in jobs:
-			LOG.info(f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}")
+		if len(jobs) > 0:
+			LOG.info_highlighted("Lista de Jobs rodando atualmente:")
+			for job in jobs:
+				LOG.info(f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}")
+		else:
+			LOG.info("Não há jobs em execução")
+		return jobs
 
 	def kill_job(self, job_id):
 		try:
@@ -48,3 +61,10 @@ class JobsService:
 			LOG.info(f"Job '{job_id}' removido com sucesso.")
 		except JobLookupError:
 			LOG.info(f"O job com ID '{job_id}' não foi encontrado.")
+			
+	def kill_all_jobs(self):
+		count = len(self.scheduler.get_jobs())
+		self.scheduler.remove_all_jobs()
+		msg = f"{count} Jobs removidos com sucesso."
+		LOG.info(msg)
+		return msg

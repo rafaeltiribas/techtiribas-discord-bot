@@ -8,7 +8,7 @@ from db import database_config
 from src.services.bot_bank_service import BotBankService
 from src.services.user_interactions_service import UserInteractionsService
 
-from src import commands
+from src.commands import commands, admin_commands
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))
@@ -24,6 +24,7 @@ database_config.create_tables()
 bank = BotBankService()
 interactions = UserInteractionsService()
 interactions.init_bank()
+interactions.start_schedules()
 
 class TiribasBot(com.Bot):
     """Estende a classe base Bot."""
@@ -44,6 +45,7 @@ class TiribasBot(com.Bot):
 bot = TiribasBot(command_prefix='/', intents=intents)
 
 commands.setup(bot)
+admin_commands.setup(bot)
 
 if __name__ == '__main__':
     bot.run(TOKEN)

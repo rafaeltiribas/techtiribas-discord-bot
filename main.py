@@ -1,4 +1,5 @@
 import os
+import src.utils.log as LOG
 
 from discord import Intents
 from discord.ext import commands as com
@@ -27,15 +28,16 @@ class TiribasBot(com.Bot):
 
     async def on_ready(self):
         """Evento de inicialização."""
-        print(f'{self.user} está rodando')
+        LOG.info_highlighted(f'{self.user} está rodando')
         await self.tree.sync()
 
     async def on_command_error(self, ctx, error) -> None:
         """Lida com erros no comando."""
-        print(error)
-        if isinstance(error, com.errors.CommandError):
-            await ctx.send('Alguma coisa deu errado ao executar esse comando. Fale com os adms')
-
+        LOG.error(error)
+        if isinstance(error, com.errors.CommandNotFound):
+            await ctx.send(f'eu não conheço esse comando :thinking: ')
+        elif isinstance(error, com.errors.CommandError):
+            await ctx.send('Alguma coisa deu errado ao executar esse comando! Fale com os adms :rotating_light:')
 
 bot = TiribasBot(command_prefix='/', intents=intents)
 

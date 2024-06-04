@@ -1,6 +1,8 @@
 from src.models.user_interactions import UserInteractionsHistory, UserInteractions
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from datetime import datetime
+import src.utils.log as LOG
 
 class UserInteractionsService:
 	
@@ -27,4 +29,4 @@ class UserInteractionsService:
 	
 	def realize_periodic_cleaning(self):
 		UserInteractionsHistory.deleteAll()
-		print("Limpeza de interacoes dos usuários foram feitas com sucesso")
+		LOG.info_highlighted("Limpeza de interacoes dos usuários foram feitas com sucesso")

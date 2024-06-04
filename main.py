@@ -5,8 +5,8 @@ from discord import Intents
 from discord.ext import commands as com
 from dotenv import find_dotenv, load_dotenv
 from db import database_config
-
 from src.services.bot_bank_service import BotBankService
+from src.services.user_interactions_service import UserInteractionsService
 
 from src import commands
 
@@ -22,6 +22,8 @@ database_config.init_db()
 database_config.create_tables()
 
 bank = BotBankService()
+interactions = UserInteractionsService()
+interactions.init_bank()
 
 class TiribasBot(com.Bot):
     """Estende a classe base Bot."""

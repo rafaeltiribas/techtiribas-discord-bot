@@ -1,7 +1,6 @@
 from src.models.bot_bank import BotBank
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
+from src.services.jobs_service import JobsService
 from src.models.wallet import Wallet
 from src.models.user import Role
 from src.services.user_service import UserService
@@ -9,11 +8,12 @@ import src.utils.log as LOG
 
 class BotBankService:
 	
+	user_service = UserService()
+	jobs_service = JobsService()
+	
 	def __init__(self):
 		self.init_bank()
-		self.sched = BackgroundScheduler()
-		self.trigger = CronTrigger.from_crontab(self.bank.cron_execute_diary_tax)
-		self.start_taxes_scheduller()
+		self.start_taxes_scheduler()
 	
 	def init_bank(self):
 		self.bank = BotBank.select().getOne(None)
@@ -23,9 +23,9 @@ class BotBankService:
 			                    cron_execute_daily_prize="0 6,18 * * *")
 	
 	
-	def start_taxes_scheduller(self):
-		self.sched.add_job(self.execute_diary_tax_in_wallets, self.trigger)
-		self.sched.start()
+	def start_taxes_scheduler(self):
+		self.jobs_service.new_job("diary_taxes", self.bank.cron_execute_diary_tax, self.execute_diary_tax_in_wallets)
+		self.jobs_service.new_job("diary_prizes", self.bank.cron_execute_daily_prize, self.execute_daily_prize)
 	
 	def execute_diary_tax_in_wallets(self):
 		LOG.info(f'Rendendo {self.bank.diary_tax} em todas as Wallets')
@@ -37,7 +37,7 @@ class BotBankService:
 		
 		
 	def alter_diary_tax(self, ctx, new_tax, new_cron):
-		user = UserService.get_user_by_ctx(ctx)
+		user = self.user_service.get_user_by_ctx(ctx)
 		if user is None or user.role is not Role.Council.name:
 			raise ValueError(f'Usuário não encontrado ou não autorizado!')
 		

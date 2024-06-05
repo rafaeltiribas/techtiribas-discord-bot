@@ -1,4 +1,8 @@
 import os
+
+from discord.ext.commands import Context, errors
+from discord.ext.commands._types import BotT
+
 import src.utils.log as LOG
 
 from discord import Intents
@@ -27,30 +31,31 @@ interactions = UserInteractionsService()
 interactions.init_bank()
 interactions.start_schedules()
 
+
 class TiribasBot(com.Bot):
-	"""Estende a classe base Bot."""
-	
-	async def on_ready(self):
-		"""Evento de inicialização."""
-		LOG.info_highlighted(f'{self.user} está rodando')
-		await self.tree.sync()
-	
-	async def on_command_error(self, ctx, error) -> None:
-		"""Lida com erros no comando."""
-		LOG.error(error)
-		if isinstance(error, com.errors.CommandNotFound):
-			msg = message.gen_embed_message("Deu ruim...", error, discord.Color.red())
-			await message.send_embed_with_img(ctx, msg, 'not-stonks-meme.gif', True)
-		elif isinstance(error, com.errors.CommandError):
-			msg = message.gen_embed_message("Deu ruim...", error, discord.Color.red())
-			await message.send_embed_with_img(ctx, msg, 'not-stonks-meme.gif', True)
+		"""Estende a classe base Bot."""
+		
+		async def on_ready(self):
+				"""Evento de inicialização."""
+				LOG.info_highlighted(f'{self.user} está rodando')
+				await self.tree.sync()
+		
+		async def on_slash_command_error(self, ctx, error) -> None:
+				"""Lida com erros no comando."""
+				LOG.error_highlighted(error)
+				if isinstance(error, com.errors.CommandNotFound):
+						msg = message.gen_embed_message("Que comando é esse?", error, discord.Color.red())
+						await message.send_embed_with_img_to_ctx(ctx, msg, 'dois_burro.jpg', True)
+				elif isinstance(error, com.errors.CommandError):
+						msg = message.gen_embed_message("Deu ruim...", error, discord.Color.red())
+						await message.send_embed_with_img_to_ctx(ctx, msg, 'not-stonks-meme.gif', True)
 
 
 bot = TiribasBot(command_prefix='/', intents=intents)
 
 commands.setup(bot)
-admin_commands.setup(bot)
-wallet_commands.setup(bot)
+wallet_commands.WalletCommands(bot)
+admin_commands.AdminCommands(bot)
 
 if __name__ == '__main__':
-	bot.run(TOKEN)
+		bot.run(TOKEN)

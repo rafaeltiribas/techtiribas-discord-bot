@@ -24,13 +24,13 @@ wallet_service = WalletService()
 @com.hybrid_command(help='Responde uma saudação.')
 async def salve(ctx):
 	"""Responde uma saudação."""
-	await message.send_msg(ctx, 'Salvi')
+	await message.send_msg_in_ctx(ctx, 'Salvi')
 
 
 @com.hybrid_command(help='Rola um dado.')
 async def dice(ctx):
 	"""Rola um dado."""
-	await message.send_msg(ctx, randint(1, 6))
+	await message.send_msg_in_ctx(ctx, randint(1, 6))
 
 
 @com.hybrid_command(help='Mostra o roadmap das lives.')
@@ -56,12 +56,6 @@ async def register(ctx: com.Context):
 	await msg.edit(content=msg_resp)
 
 
-@com.hybrid_command('alterar_funcao', help="Altere um usuário para Member, Subscriber ou Admin")
-@app_commands.describe(username="Marque o usuário", role="Member, Subscriber ou Admin")
-async def update_role_user(ctx: com.Context, username: str, role: str):
-	msg_resp = usr_service.update_user_role(ctx, username, role)
-	await message.send_msg(ctx, msg_resp, True)
-
 
 def setup(bot):
 	"""defina aqui os comandos no bot"""
@@ -70,4 +64,3 @@ def setup(bot):
 	bot.add_command(dice)
 	bot.add_command(salve)
 	bot.add_command(register)
-	bot.add_command(update_role_user)

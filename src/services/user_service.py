@@ -2,6 +2,8 @@ from src.models.user import User, Role
 from src.models.wallet import Wallet
 from src.models.transaction_history import TransactionHistory, TransactionType
 import db.database_config as db
+import src.utils.log as LOG
+
 class UserService:
 
 	def register_user_from_ctx(self, ctx):
@@ -15,7 +17,7 @@ class UserService:
 			con.commit()
 			return f'Você foi Resgistrado! agora você possui uma carteira com {wallet.balance} Bytes!'
 		except Exception as e:
-			print("Houve erro ao cadastrar novo user: "+e)
+			LOG.error("Houve erro ao cadastrar novo user: "+e)
 			con.rollback()
 			return e
 	
@@ -73,7 +75,7 @@ class UserService:
 	
 	def update_user(self, user, new_role):
 		if user is None:
-			raise ValueError(f'Usuário {user} não encontrado!')
+			raise ValueError(f'Usuário não encontrado!')
 		
 		if not Role.is_valid(new_role):
 			raise ValueError(f'Função {new_role} não é válida')
@@ -98,3 +100,10 @@ class UserService:
 	
 	def get_user_by_discord_id(self, id_discord):
 		return User.selectBy(id_discord=id_discord).getOne(None)
+	
+	def user_is_admin_or_higher(self, ctx) -> bool:
+		user = self.get_user_by_ctx(ctx)
+		if user is not None:
+			return Role.__getitem__(user.role).value >= Role.Admin.value
+		else:
+			return False

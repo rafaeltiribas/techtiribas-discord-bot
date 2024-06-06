@@ -57,6 +57,28 @@ class EventoCommands(com.Cog):
 				except Exception as e:
 						await message.send_std_error_msg(interaction, e)
 		
+		@evento.command(name='fechar', description="Fechar as apostas")
+		@app_commands.describe(id="Id do evento")
+		async def close_bets(self, interaction: discord.Interaction, id: int):
+				try:
+						closed_embed_msg = evento_service.close_bets(interaction, id)
+						await message.send_embed_with_img(interaction, closed_embed_msg, 'closed_bets.gif', False)
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue, True)
+				except Exception as e:
+						await message.send_std_error_msg(interaction, e)
+		
+		@evento.command(name='finalizar', description="Finalizar evento, declarar vencedor e realizar os pagamentos")
+		@app_commands.describe(id="Id do evento", vencedor="Quem ganhou?")
+		async def finalize_evento(self, interaction: discord.Interaction, id: int, vencedor: str):
+				try:
+						embed_msg = evento_service.finalize_events(interaction, id, vencedor)
+						await message.send_embed_with_img(interaction, embed_msg, 'congrats_winners.gif', False)
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue, True)
+				except Exception as e:
+						await message.send_std_error_msg(interaction, e)
+		
 		@bet_on_the_event.autocomplete('opcao')
 		async def _opcoes(self, interaction: discord.Interaction, current: str):
 				options = [
@@ -72,3 +94,11 @@ class EventoCommands(com.Cog):
 						for category in Category
 						if current.lower() in category.value.lower()
 				]
+		
+		@finalize_evento.autocomplete('vencedor')
+		async def _opcoes_winner(self, interaction: discord.Interaction, current: str):
+				options = [
+						app_commands.Choice(name="A", value="A"),
+						app_commands.Choice(name="B", value="B"),
+				]
+				return [choice for choice in options if current.lower() in choice.name.lower()]

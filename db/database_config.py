@@ -2,7 +2,7 @@ from sqlobject import connectionForURI, sqlhub
 
 from src.models.user import User
 from src.models.wallet import Wallet
-from src.models.evento import Evento, BettingHistory
+from src.models.evento import Evento, BettingHistory, BettingPayments
 from src.models.transaction_history import TransactionHistory
 from src.models.bot_bank import BotBank
 from src.models.user_interactions import UserInteractionsHistory, UserInteractions
@@ -22,6 +22,7 @@ def create_tables():
     UserInteractionsHistory.createTable(ifNotExists=True)
     Evento.createTable(ifNotExists=True)
     BettingHistory.createTable(ifNotExists=True)
+    BettingPayments.createTable(ifNotExists=True)
     
 def open_transaction():
     con = get_connection()

@@ -1,4 +1,4 @@
-from sqlobject import SQLObject, StringCol, FloatCol, ForeignKey, DateTimeCol
+from sqlobject import SQLObject, IntCol, StringCol, FloatCol, ForeignKey, DateTimeCol
 from enum import Enum
 
 
@@ -21,6 +21,8 @@ class Evento(SQLObject):
 		category = StringCol()
 		option_a = StringCol()
 		option_b = StringCol()
+		total_bets_a = IntCol(default=0.0)
+		total_bets_b = IntCol(default=0.0)
 		total_amount_a = FloatCol(default=0.0)
 		total_amount_b = FloatCol(default=0.0)
 		odds_a = FloatCol(default=1.0)
@@ -38,3 +40,9 @@ class BettingHistory(SQLObject):
 		option_selected = StringCol()
 		bet_on = DateTimeCol(default=DateTimeCol.now)
 		amount_bet = FloatCol(default=0.0)
+		
+class BettingPayments(SQLObject):
+		user = ForeignKey('User')
+		evento = ForeignKey('Evento')
+		value_won = FloatCol(default=0.0)
+		hour_of_payment = DateTimeCol(default=DateTimeCol.now)

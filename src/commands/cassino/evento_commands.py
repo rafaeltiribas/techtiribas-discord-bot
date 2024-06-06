@@ -43,6 +43,19 @@ class EventoCommands(com.Cog):
 						await message.send_embed_with_img(interaction, embed, 'bet_feita.gif')
 				except UserError as ue:
 						await message.send_user_error_msg(interaction, ue, True)
+				except Exception as e:
+						await message.send_std_error_msg(interaction, e)
+		
+		@evento.command(name='anunciar', description="Anuncie um evento")
+		@app_commands.describe(id="Id do evento")
+		async def announce_event(self, interaction: discord.Interaction, id: int):
+				try:
+						evt = evento_service.get_event_to_announce(interaction, id)
+						await message.announce_event(interaction, evt)
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue, True)
+				except Exception as e:
+						await message.send_std_error_msg(interaction, e)
 		
 		@bet_on_the_event.autocomplete('opcao')
 		async def _opcoes(self, interaction: discord.Interaction, current: str):

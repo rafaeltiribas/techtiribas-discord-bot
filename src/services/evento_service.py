@@ -18,6 +18,20 @@ class EventoService:
 				             status='CRIADA')
 				return evt
 		
+		def get_event_to_announce(self, interaction: discord.Interaction, id) -> Evento:
+				user = user_service.get_user_from_interaction(interaction)
+				if user is None:
+						raise UserError(f"Não sei quem é tu... se cadastra aí com **/register**")
+				
+				if id <= 0:
+						raise UserError(f"HÃN??? QUE EVENTO DE ID {id} É ESSE ??? EXISTE??")
+				
+				evento = Evento.selectBy(id=id).getOne(None)
+				if evento is None:
+						raise UserError(f"HÃN??? QUE EVENTO DE ID {id} É ESSE ??? EXISTE??")
+				
+				return evento
+				
 		def betting_on(self, interaction: discord.Interaction, id, opcao, bytes) -> dict:
 				
 				if bytes <= 0:
@@ -48,16 +62,19 @@ class EventoService:
 				wallet = wallet_service.get_user_wallet(user)
 				if bytes > wallet.balance:
 						raise UserError(f"VOCÊ TÁ POBRE!! Você não tem bytes suficientes para realizar aposta no valor B$ {bytes}")
-				wallet.balance -= bytes
-		
+				
 				if opcao == "A":
 						evento.total_amount_a += round(bytes, 2)
 				else:
 						evento.total_amount_b += round(bytes, 2)
 				
+				wallet.balance -= bytes
+				
 				self._calculate_odds(evento)
 				
 				BettingHistory(user_who_bet=user, evento=evento, amount_bet=bytes, option_selected=option_selected)
+				
+				evento.status = "APOSTAS ABERTAS"
 				
 				con.commit()
 				

@@ -50,7 +50,7 @@ async def announce_event(interaction, evt: Evento):
 		fields = {
 				"Status do Evento:" : { "value" : f"{evt.status}" , "inline": True},
 				f"{evt.option_a}:" : { "value" : f"Odds: (x{evt.odds_a})" , "inline": True},
-				f"{evt.option_b}:" : { "value" : f"Odds: (x{evt.odds_a})" , "inline": True},
+				f"{evt.option_b}:" : { "value" : f"Odds: (x{evt.odds_b})" , "inline": True},
 		}
 		embed = gen_embed_message(
 				title=f"ID [#{evt.id}] - {evt.title}",

@@ -28,6 +28,10 @@ class WalletService:
 				con.commit()
 				return msg
 		
+		def get_user_wallet(self, user):
+				return Wallet.selectBy(user=user).getOne(None)
+			
+		
 		def transferir_bytes_para(self, interaction, username, value):
 				if value == 0:
 						raise UserError("COMO QUE VOCÊ VAI TRANSFERIR 0 BYTES ????")

@@ -1,6 +1,7 @@
 import discord
 import os
 from typing import Dict, Optional
+from src.models.evento import Evento
 
 
 def gen_embed_message(
@@ -45,6 +46,19 @@ def gen_embed_message(
 		
 		return embed_msg
 
+async def announce_event(interaction, evt: Evento):
+		fields = {
+				"Status do Evento:" : { "value" : f"{evt.status}" , "inline": True},
+				f"{evt.option_a}:" : { "value" : f"Odds: (x{evt.odds_a})" , "inline": True},
+				f"{evt.option_b}:" : { "value" : f"Odds: (x{evt.odds_a})" , "inline": True},
+		}
+		embed = gen_embed_message(
+				title=f"ID [#{evt.id}] - {evt.title}",
+				description=f'use **/evento apostar {evt.id}** para apostar!',
+				color=discord.Color.yellow(),
+				fields=fields
+		)
+		await send_embed_with_img(interaction, embed, f'{evt.category}.gif', False)
 
 async def send_user_error_msg(interaction, error, only_author_can_see=True):
 		msg = gen_embed_message(mensagens_inspiradoras(), error, discord.Color.red(), footer=mensagens_inspiradoras())

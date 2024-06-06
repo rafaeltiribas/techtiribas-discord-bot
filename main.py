@@ -1,8 +1,5 @@
 import os
 
-from discord.ext.commands import Context, errors
-from discord.ext.commands._types import BotT
-
 import src.utils.log as LOG
 
 from discord import Intents
@@ -14,6 +11,7 @@ from src.services.bot_bank_service import BotBankService
 from src.services.user_interactions_service import UserInteractionsService
 import src.utils.messages as message
 from src.commands import commands, admin_commands, wallet_commands
+from src.commands.cassino import evento_commands
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))
@@ -56,6 +54,8 @@ bot = TiribasBot(command_prefix='/', intents=intents)
 commands.setup(bot)
 wallet_commands.WalletCommands(bot)
 admin_commands.AdminCommands(bot)
+evento_commands.EventoCommands(bot)
+
 
 if __name__ == '__main__':
 		bot.run(TOKEN)

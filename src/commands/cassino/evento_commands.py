@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands as com
 
-import src.utils.messages as message
+import src.functionalities.messages as message
 from src.models.evento import Category
 from src.services.jobs_service import JobsService
 from src.services.user_service import UserService

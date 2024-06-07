@@ -2,7 +2,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.base import SchedulerAlreadyRunningError
 from apscheduler.schedulers.base import JobLookupError
-import src.utils.log as LOG
 
 """
 	Este service serve para manter jobs, pode-se obter um, criar e deletar (famoso CRUD)
@@ -31,29 +30,29 @@ class JobsService:
 				if self.scheduler.get_job(job_id) is None:
 						try:
 								job = self.scheduler.add_job(def_to_execute, trigger, id=job_id)
-								LOG.info(f'Novo job registrado para execução: {job.id}')
+								log.info(f'Novo job registrado para execução: {job.id}')
 						except SchedulerAlreadyRunningError as se:
-								LOG.warn(f"Já existe um job '{job_id}' em execução.")
+								log.warn(f"Já existe um job '{job_id}' em execução.")
 		
 		def start_jobs(self):
 				try:
 						self.scheduler.start()
-						LOG.info("Jobs iniciados...")
+						log.info("Jobs iniciados...")
 						return "Iniciado todos os jobs"
 				except SchedulerAlreadyRunningError as se:
-						LOG.warn(f"Houve um erro ao tentar iniciar jobs: {se}")
+						log.warn(f"Houve um erro ao tentar iniciar jobs: {se}")
 						return f"Jobs já foram iniciados!"
 				except Exception as e:
-						LOG.error(f"Erro ao iniciar jobs: {e}")
+						log.error(f"Erro ao iniciar jobs: {e}")
 						return f"Erro ao iniciar jobs: {e}"
 		
 		def get_especific_job(self, job_id):
 				job = self.scheduler.get_job(job_id)
 				msg = f"Não foi encontrado o job '{job_id}'"
 				if job is not None:
-						LOG.text_highlighted(f"Job id {job.id}")
+						log.text_highlighted(f"Job id {job.id}")
 						msg = f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}"
-				LOG.text_highlighted(msg)
+				log.text_highlighted(msg)
 				return msg
 		
 		def get_job(self, job_id):
@@ -62,23 +61,23 @@ class JobsService:
 		def list_jobs(self):
 				jobs = self.scheduler.get_jobs()
 				if len(jobs) > 0:
-						LOG.info_highlighted("Lista de Jobs rodando atualmente:")
+						log.info_highlighted("Lista de Jobs rodando atualmente:")
 						for job in jobs:
-								LOG.info(f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}")
+								log.info(f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}")
 				else:
-						LOG.info("Não há jobs em execução")
+						log.info("Não há jobs em execução")
 				return jobs
 		
 		def kill_job(self, job_id):
 				try:
 						self.scheduler.remove_job(job_id)
-						LOG.info(f"Job '{job_id}' removido com sucesso.")
+						log.info(f"Job '{job_id}' removido com sucesso.")
 				except JobLookupError:
-						LOG.info(f"O job com ID '{job_id}' não foi encontrado.")
+						log.info(f"O job com ID '{job_id}' não foi encontrado.")
 		
 		def kill_all_jobs(self):
 				count = len(self.scheduler.get_jobs())
 				self.scheduler.remove_all_jobs()
 				msg = f"{count} Jobs removidos com sucesso."
-				LOG.info(msg)
+				log.info(msg)
 				return msg

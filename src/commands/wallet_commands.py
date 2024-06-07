@@ -6,7 +6,7 @@ import random
 from src.services.user_service import UserService
 from src.services.wallet_service import WalletService
 from src.exceptions.bot_errors import UserError
-import src.utils.messages as message
+import src.functionalities.messages as message
 
 user_service = UserService()
 wallet_service = WalletService()

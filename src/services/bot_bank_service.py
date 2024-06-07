@@ -4,7 +4,7 @@ from src.services.jobs_service import JobsService
 from src.models.wallet import Wallet
 from src.models.user import Role
 from src.services.user_service import UserService
-import src.utils.log as LOG
+
 
 class BotBankService:
 	
@@ -28,12 +28,12 @@ class BotBankService:
 		self.jobs_service.new_job("diary_prizes", self.bank.cron_execute_daily_prize, self.execute_daily_prize)
 	
 	def execute_diary_tax_in_wallets(self):
-		LOG.info(f'Rendendo {self.bank.diary_tax} em todas as Wallets')
+		log.info(f'Rendendo {self.bank.diary_tax} em todas as Wallets')
 		for w in Wallet.select():
 			w.balance = round(w.balance + ((self.bank.diary_tax / 100) * w.balance), 2)
 			
 	def execute_daily_prize(self):
-		LOG.info(f'Iniciar a premiação diária')
+		log.info(f'Iniciar a premiação diária')
 		
 		
 	def alter_diary_tax(self, ctx, new_tax, new_cron):

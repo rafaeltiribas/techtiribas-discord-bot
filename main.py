@@ -1,7 +1,5 @@
 import os
 
-import src.utils.log as LOG
-
 from discord import Intents
 import discord
 from discord.ext import commands as com
@@ -9,7 +7,7 @@ from dotenv import find_dotenv, load_dotenv
 from db import database_config
 from src.services.bot_bank_service import BotBankService
 from src.services.user_interactions_service import UserInteractionsService
-import src.utils.messages as message
+import src.functionalities.messages as message
 from src.commands import commands, admin_commands, wallet_commands
 from src.commands.cassino import evento_commands
 
@@ -35,12 +33,12 @@ class TiribasBot(com.Bot):
 		
 		async def on_ready(self):
 				"""Evento de inicialização."""
-				LOG.info_highlighted(f'{self.user} está rodando')
+				log.info_highlighted(f'{self.user} está rodando')
 				await self.tree.sync()
 		
 		async def on_slash_command_error(self, ctx, error) -> None:
 				"""Lida com erros no comando."""
-				LOG.error_highlighted(error)
+				log.error_highlighted(error)
 				if isinstance(error, com.errors.CommandNotFound):
 						msg = message.gen_embed_message("Que comando é esse?", error, discord.Color.red())
 						await message.send_embed_with_img_to_ctx(ctx, msg, 'dois_burro.jpg', True)

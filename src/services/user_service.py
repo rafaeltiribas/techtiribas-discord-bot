@@ -2,7 +2,6 @@ from src.models.user import User, Role
 from src.models.wallet import Wallet
 from src.models.transaction_history import TransactionHistory, TransactionType
 import db.database_config as db
-import src.utils.log as LOG
 
 
 class UserService:
@@ -18,7 +17,7 @@ class UserService:
 						con.commit()
 						return f'Você foi Resgistrado! agora você possui uma carteira com {wallet.balance} Bytes!'
 				except Exception as e:
-						LOG.error("Houve erro ao cadastrar novo user: " + e)
+						log.error("Houve erro ao cadastrar novo user: " + e)
 						con.rollback()
 						return e
 		

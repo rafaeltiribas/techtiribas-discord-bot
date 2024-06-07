@@ -10,6 +10,7 @@ from src.services.user_interactions_service import UserInteractionsService
 import src.functionalities.messages as message
 from src.commands import commands, admin_commands, wallet_commands
 from src.commands.cassino import evento_commands
+import src.functionalities.log as LOG
 
 # GET TOKEN
 load_dotenv(find_dotenv('.venv/.env'))
@@ -33,18 +34,18 @@ class TiribasBot(com.Bot):
 		
 		async def on_ready(self):
 				"""Evento de inicialização."""
-				log.info_highlighted(f'{self.user} está rodando')
+				LOG.info_highlighted(f'{self.user} está rodando')
 				await self.tree.sync()
 		
 		async def on_slash_command_error(self, ctx, error) -> None:
 				"""Lida com erros no comando."""
-				log.error_highlighted(error)
+				LOG.error_highlighted(error)
 				if isinstance(error, com.errors.CommandNotFound):
 						msg = message.gen_embed_message("Que comando é esse?", error, discord.Color.red())
-						await message.send_embed_with_img_to_ctx(ctx, msg, 'dois_burro.jpg', True)
+						await message.send_embed_with_img_to_ctx(ctx, msg, "errors", "user", True)
 				elif isinstance(error, com.errors.CommandError):
 						msg = message.gen_embed_message("Deu ruim...", error, discord.Color.red())
-						await message.send_embed_with_img_to_ctx(ctx, msg, 'not-stonks-meme.gif', True)
+						await message.send_embed_with_img_to_ctx(ctx, msg, "errors", "user", True)
 
 
 bot = TiribasBot(command_prefix='/', intents=intents)

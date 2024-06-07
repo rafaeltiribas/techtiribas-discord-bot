@@ -40,7 +40,7 @@ class EventoCommands(com.Cog):
 								color=discord.Color.green(),
 								fields=field_response
 						)
-						await message.send_embed_with_img(interaction, embed, 'bet_feita.gif')
+						await message.send_embed_with_img(interaction, embed, "evento", "apostar")
 				except UserError as ue:
 						await message.send_user_error_msg(interaction, ue, True)
 				except Exception as e:
@@ -62,7 +62,7 @@ class EventoCommands(com.Cog):
 		async def close_bets(self, interaction: discord.Interaction, id: int):
 				try:
 						closed_embed_msg = evento_service.close_bets(interaction, id)
-						await message.send_embed_with_img(interaction, closed_embed_msg, 'closed_bets.gif', False)
+						await message.send_embed_with_img(interaction, closed_embed_msg, "evento","fechar" , only_author_can_see=False)
 				except UserError as ue:
 						await message.send_user_error_msg(interaction, ue, True)
 				except Exception as e:
@@ -73,7 +73,7 @@ class EventoCommands(com.Cog):
 		async def finalize_evento(self, interaction: discord.Interaction, id: int, vencedor: str):
 				try:
 						embed_msg = evento_service.finalize_events(interaction, id, vencedor)
-						await message.send_embed_with_img(interaction, embed_msg, 'congrats_winners.gif', False)
+						await message.send_embed_with_img(interaction, embed_msg, "evento", "finalizar" , only_author_can_see=False)
 				except UserError as ue:
 						await message.send_user_error_msg(interaction, ue, True)
 				except Exception as e:

@@ -25,7 +25,7 @@ class WalletCommands(com.Cog):
 				try:
 						msg = wallet_service.get_balance_wallet(interaction)
 						embed = message.gen_embed_message("Seus bytes", msg, discord.Color.gold())
-						await message.send_embed_with_img(interaction, embed, 'mask_money.gif', True)
+						await message.send_embed_with_img(interaction, embed, "wallet", "saldo")
 				except UserError as e:
 						await message.send_user_error_msg(interaction, e)
 		
@@ -36,7 +36,7 @@ class WalletCommands(com.Cog):
 						msg = wallet_service.transferir_bytes_para(interaction, username, bytes)
 						embed = message.gen_embed_message("Transferência", msg, discord.Color.green(),
 						                                  footer=self.transferencia_entre_pobres())
-						await message.send_embed_with_img(interaction, embed, 'transferencia_monkey.gif', True)
+						await message.send_embed_with_img(interaction, embed, "wallet", "transferir")
 				except UserError as e:
 						await message.send_user_error_msg(interaction, e)
 		

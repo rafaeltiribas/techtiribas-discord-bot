@@ -1,0 +1,36 @@
+{
+  "assets": {
+    "dir_path": "/opt/bot/assets/",
+    "errors": {
+      "user": ["user-error1", "user-error2", "user-error3", "user-error4"],
+      "internal_error": ["internal-error1", "internal-error2"]
+    },
+    "evento": {
+      "category": {
+        "UFC": ["UFC1", "UFC2"],
+        "e_Sports": ["esp1", "esp2"],
+        "Zoera": ["zoera1", "zoera2"],
+        "Generica": ["random1", "random2", "random3"]
+      },
+      "criar": ["create1", "create2"],
+      "apostar": ["bet1", "bet2"],
+      "fechar": ["fechar1", "fechar2"],
+      "finalizar": ["winners1", "winners2", "winners3"]
+    },
+    "staff": {
+      "admin": ["admin1" , "admin2"],
+      "finalizar_todos_jobs": ["finalizar-jobs"],
+      "job": ["start-job"],
+      "iniciar_jobs": ["start-job"],
+      "alterar_funcao": ["finalizar-jobs"],
+      "erro": ["admin-error1", "admin-error2", "admin-error3"]
+    },
+    "wallet": {
+      "saldo": ["wallet1", "wallet2"],
+      "transferir": ["transfer1", "transfer2"]
+    },
+    "users" : {
+      "ban": ["ban1", "ban2", "ban3"]
+    }
+  }
+}

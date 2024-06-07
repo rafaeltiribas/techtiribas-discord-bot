@@ -35,7 +35,7 @@ class AdminCommands(com.Cog):
 						fields=fields,
 						footer=f"Executed by {interaction.user.name}"
 				)
-				await message.send_embed_with_img(interaction, embed, 'admin.gif', True)
+				await message.send_embed_with_img(interaction, embed, "staff", "admin")
 		
 		@admin.command(name='job', description="Veja o que rola num job process")
 		@app_commands.describe(job_id="Id do job")
@@ -50,7 +50,7 @@ class AdminCommands(com.Cog):
 						description=msg,
 						color=discord.Color.blurple()
 				)
-				await message.send_embed_with_img(interaction, embed, 'admin.gif')
+				await message.send_embed_with_img(interaction, embed, "staff", "admin")
 		
 		@admin.command(name='iniciar_jobs', description="Inicia todos os jobs do bot")
 		async def start_jobs(self, interaction: discord.Interaction):
@@ -60,7 +60,7 @@ class AdminCommands(com.Cog):
 						description=msg,
 						color=discord.Color.blurple()
 				)
-				await message.send_embed_with_img(interaction, embed, 'admin.gif')
+				await message.send_embed_with_img(interaction, embed, "staff", "admin")
 		
 		@admin.command(name='alterar_funcao', description="Altere um usuário para Member, Subscriber ou Admin")
 		@app_commands.describe(username="Marque o usuário", role="Member, Subscriber ou Admin")

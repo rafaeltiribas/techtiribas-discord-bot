@@ -1,8 +1,10 @@
 import discord
 import os
 from typing import Dict, Optional
+from src.functionalities.assets import Assets
 from src.models.evento import Evento
 
+gifs = Assets()
 
 def gen_embed_message(
 		title: str,
@@ -48,9 +50,9 @@ def gen_embed_message(
 
 async def announce_event(interaction, evt: Evento):
 		fields = {
-				"Status do Evento:" : { "value" : f"{evt.status}" , "inline": True},
-				f"{evt.option_a}:" : { "value" : f"Odds: (x{evt.odds_a})" , "inline": True},
-				f"{evt.option_b}:" : { "value" : f"Odds: (x{evt.odds_b})" , "inline": True},
+				"Status do Evento:": {"value": f"{evt.status}", "inline": True},
+				f"{evt.option_a}:": {"value": f"Odds: (x{evt.odds_a})", "inline": True},
+				f"{evt.option_b}:": {"value": f"Odds: (x{evt.odds_b})", "inline": True},
 		}
 		embed = gen_embed_message(
 				title=f"ID [#{evt.id}] - {evt.title}",
@@ -58,42 +60,33 @@ async def announce_event(interaction, evt: Evento):
 				color=discord.Color.yellow(),
 				fields=fields
 		)
-		await send_embed_with_img(interaction, embed, f'{evt.category}.gif', False)
+		await send_embed_with_img(interaction, embed, "evento", f"{evt.category}", only_author_can_see=False)
+
 
 async def send_user_error_msg(interaction, error, only_author_can_see=True):
 		msg = gen_embed_message(mensagens_inspiradoras(), error, discord.Color.red(), footer=mensagens_inspiradoras())
-		await send_embed_with_img(interaction, msg, 'dois_burro.jpg', only_author_can_see)
+		await send_embed_with_img(interaction, msg, "errors","user", only_author_can_see=only_author_can_see)
 
 
 async def send_std_error_msg(interaction, error, only_author_can_see=True):
 		msg = gen_embed_message("Ops! Aconteceu algo ruim...", error, discord.Color.red())
-		await send_embed_with_img(interaction, msg, 'not-stonks-meme.gif', only_author_can_see)
+		await send_embed_with_img(interaction, msg, "errors","internal_error", only_author_can_see=only_author_can_see)
 
 
 async def send_embed_msg(interaction, embed_message, only_author_can_see=True):
 		await interaction.response.send_message(embed=embed_message, ephemeral=only_author_can_see)
 
 
-async def send_embed_with_img_to_ctx(ctx, embed_message, img_name, only_author_can_see=True) -> None:
-		img_path = os.path.abspath(f'assets/{img_name}')
-		if os.path.isfile(img_path):
-				with open(img_path, 'rb') as f:
-						picture = discord.File(f, filename=img_name)
-						embed_message.set_image(url=f"attachment://{img_name}")
-						await ctx.send(embed=embed_message, file=picture, ephemeral=only_author_can_see)
-		else:
-				await ctx.send(embed=embed_message, ephemeral=only_author_can_see)
+async def send_embed_with_img_to_ctx(ctx, embed_message, *path_nodes, only_author_can_see=True) -> None:
+		picture = gifs.get_discord_file(path_nodes)
+		embed_message.set_image(url=f"attachment://{picture.filename}")
+		await ctx.send(embed=embed_message, file=picture, ephemeral=only_author_can_see)
 
 
-async def send_embed_with_img(interaction, embed_message, img_name, only_author_can_see=True) -> None:
-		img_path = os.path.abspath(f'assets/{img_name}')
-		if os.path.isfile(img_path):
-				with open(img_path, 'rb') as f:
-						picture = discord.File(f, filename=img_name)
-						embed_message.set_image(url=f"attachment://{img_name}")
-						await interaction.response.send_message(embed=embed_message, file=picture, ephemeral=only_author_can_see)
-		else:
-				await interaction.response.send_message(embed=embed_message, ephemeral=only_author_can_see)
+async def send_embed_with_img(interaction, embed_message, *path_nodes, only_author_can_see=True) -> None:
+		picture = gifs.get_discord_file(*path_nodes)
+		embed_message.set_image(url=f"attachment://{picture.filename}")
+		await interaction.response.send_message(embed=embed_message, file=picture, ephemeral=only_author_can_see)
 
 
 async def send_msg_whom_interacted(interaction, msg, only_author_can_see=True) -> None:

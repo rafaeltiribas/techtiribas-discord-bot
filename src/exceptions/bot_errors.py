@@ -3,3 +3,11 @@ class UserError(Exception):
 		def __init__(self, mensagem):
 				self.mensagem = mensagem
 				super().__init__(self.mensagem)
+
+
+class AdminError(Exception):
+		"""Exceção personalizada para erro do Usuario."""
+		
+		def __init__(self, mensagem):
+				self.mensagem = mensagem
+				super().__init__(self.mensagem)

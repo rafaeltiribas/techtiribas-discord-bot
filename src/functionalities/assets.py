@@ -1,6 +1,6 @@
 import discord, random, os, json
 from types import SimpleNamespace
-
+import src.functionalities.log as LOG
 
 class Assets():
 		
@@ -43,6 +43,8 @@ class Assets():
 						
 						with open(abs_path, 'rb') as f:
 								return discord.File(f, filename=os.path.basename(abs_path))
-				
+				except FileNotFoundError as fe:
+						LOG.warn(f"Não foi encontrado o arquivo para {path_segments}, vou enviar um image_not_found")
+						return self.get_discord_file("errors", "image_not_found")
 				except Exception as e:
 						raise e

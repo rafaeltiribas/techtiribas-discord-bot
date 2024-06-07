@@ -3,6 +3,8 @@ from discord import app_commands
 from discord.ext import commands as com
 
 import src.functionalities.messages as message
+from src.models.user import Role
+from src.exceptions.bot_errors import *
 from src.services.jobs_service import JobsService
 from src.services.user_service import UserService
 
@@ -20,50 +22,59 @@ class AdminCommands(com.Cog):
 		
 		@admin.command(name='finalizar_todos_jobs', description="Mate os jobs")
 		async def kill_jobs(self, interaction: discord.Interaction):
-				if not user_service.user_is_admin_or_higher(interaction):
-						await interaction.response.send_message("Você não está autorizado a realizar essa ação", ephemeral=True)
-						return
-				
-				msg = jobs_service.kill_all_jobs()
-				fields = {
-						"Resposta": {"value": msg, "inline": False}
-				}
-				embed = message.gen_embed_message(
-						title="/kill_jobs",
-						description="Admin command",
-						color=discord.Color.yellow(),
-						fields=fields,
-						footer=f"Executed by {interaction.user.name}"
-				)
-				await message.send_embed_with_img(interaction, embed, "staff", "admin")
+				try:
+						msg = jobs_service.kill_all_jobs(interaction)
+						embed = message.gen_embed_message(
+								title="Matando serviço né...",
+								description=msg,
+								color=discord.Color.pink(),
+						)
+						await message.send_embed_with_img(interaction, embed, "staff", "finalizar_todos_jobs")
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue)
+				except Exception as e:
+						await message.send_std_error_msg(interaction, e)
 		
 		@admin.command(name='job', description="Veja o que rola num job process")
 		@app_commands.describe(job_id="Id do job")
 		async def get_especific_job(self, interaction: discord.Interaction, job_id: str):
-				if not user_service.user_is_admin_or_higher(interaction):
-						await interaction.response.send_message("Você não está autorizado a realizar essa ação", ephemeral=True)
-						return
-				
-				msg = jobs_service.get_especific_job(job_id)
-				embed = message.gen_embed_message(
-						title="Job",
-						description=msg,
-						color=discord.Color.blurple()
-				)
-				await message.send_embed_with_img(interaction, embed, "staff", "admin")
+				try:
+						msg = jobs_service.get_especific_job(interaction, job_id)
+						embed = message.gen_embed_message(
+								title="Job",
+								description=msg,
+								color=discord.Color.blurple()
+						)
+						await message.send_embed_with_img(interaction, embed, "staff", "admin")
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue)
 		
 		@admin.command(name='iniciar_jobs', description="Inicia todos os jobs do bot")
 		async def start_jobs(self, interaction: discord.Interaction):
-				msg = jobs_service.start_jobs()
-				embed = message.gen_embed_message(
-						title="Job",
-						description=msg,
-						color=discord.Color.blurple()
-				)
-				await message.send_embed_with_img(interaction, embed, "staff", "admin")
+				try:
+						msg = jobs_service.start_jobs(interaction)
+						embed = message.gen_embed_message(
+								title="Jobs iniciados",
+								description=msg,
+								color=discord.Color.blurple()
+						)
+						await message.send_embed_with_img(interaction, embed, "staff", "admin")
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue)
+				except Exception as e:
+						await message.send_std_error_msg(interaction, e)
 		
 		@admin.command(name='alterar_funcao', description="Altere um usuário para Member, Subscriber ou Admin")
 		@app_commands.describe(username="Marque o usuário", role="Member, Subscriber ou Admin")
+		@app_commands.choices(role = [
+				app_commands.Choice(name=role.name, value=role.name)
+				for role in Role
+		])
 		async def update_role_user(self, interaction: discord.Interaction, username: str, role: str):
-				msg_resp = user_service.update_user_role(interaction, username, role)
-				await message.send_msg_in_ctx(interaction, msg_resp)
+				try:
+						msg_resp = user_service.update_user_role(interaction, username, role)
+						await message.send_embed_msg(interaction, msg_resp)
+				except UserError as ue:
+						await message.send_user_error_msg(interaction, ue)
+				except AdminError as ae:
+						await message.send_std_error_msg(interaction, ae)

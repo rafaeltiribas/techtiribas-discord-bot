@@ -1,5 +1,6 @@
 import discord
 import os
+import random
 from typing import Dict, Optional
 from src.functionalities.assets import Assets
 from src.models.evento import Evento
@@ -54,13 +55,17 @@ async def announce_event(interaction, evt: Evento):
 				f"{evt.option_a}:": {"value": f"Odds: (x{evt.odds_a})", "inline": True},
 				f"{evt.option_b}:": {"value": f"Odds: (x{evt.odds_b})", "inline": True},
 		}
+		desc = f'use **/evento apostar {evt.id}** para apostar!'
+		if evt.status != "APOSTAS ABERTAS" and evt.status != "CRIADA":
+				desc = "APOSTAS ENCERRADAS! Que vença o melhor!"
+		
 		embed = gen_embed_message(
 				title=f"ID [#{evt.id}] - {evt.title}",
-				description=f'use **/evento apostar {evt.id}** para apostar!',
+				description=desc,
 				color=discord.Color.yellow(),
 				fields=fields
 		)
-		await send_embed_with_img(interaction, embed, "evento", f"{evt.category}", only_author_can_see=False)
+		await send_embed_with_img(interaction, embed, "evento", "category" ,f"{evt.category}", only_author_can_see=False)
 
 
 async def send_user_error_msg(interaction, error, only_author_can_see=True):
@@ -72,6 +77,10 @@ async def send_std_error_msg(interaction, error, only_author_can_see=True):
 		msg = gen_embed_message("Ops! Aconteceu algo ruim...", error, discord.Color.red())
 		await send_embed_with_img(interaction, msg, "errors","internal_error", only_author_can_see=only_author_can_see)
 
+
+async def send_admin_error_msg(interaction, error, only_author_can_see=True):
+		msg = gen_embed_message("Ops! Deu ruim ein...", error, discord.Color.red())
+		await send_embed_with_img(interaction, msg, "errors", "admin", only_author_can_see=only_author_can_see)
 
 async def send_embed_msg(interaction, embed_message, only_author_can_see=True):
 		await interaction.response.send_message(embed=embed_message, ephemeral=only_author_can_see)
@@ -95,9 +104,6 @@ async def send_msg_whom_interacted(interaction, msg, only_author_can_see=True) -
 
 async def send_msg_in_ctx(ctx, msg, only_author_can_see=False) -> None:
 		await ctx.send(msg, ephemeral=only_author_can_see)
-
-
-import random
 
 
 def mensagens_inspiradoras() -> str:

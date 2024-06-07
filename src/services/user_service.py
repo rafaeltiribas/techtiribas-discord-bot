@@ -1,6 +1,8 @@
 from src.models.user import User, Role
 from src.models.wallet import Wallet
+from src.exceptions.bot_errors import UserError, AdminError
 from src.models.transaction_history import TransactionHistory, TransactionType
+import src.functionalities.log as LOG
 import db.database_config as db
 
 
@@ -10,16 +12,16 @@ class UserService:
 				con = db.open_transaction()
 				try:
 						if self.get_user_by_ctx(ctx) is not None:
-								return 'Você já está cadastrado! use **/** para ver outros comandos'
+								raise UserError('Você já está cadastrado! use **/** para ver outros comandos')
 						
 						user = self.save_user(str(ctx.author.id), ctx.author.name)
 						wallet = self.create_wallet_for_user(user)
 						con.commit()
 						return f'Você foi Resgistrado! agora você possui uma carteira com {wallet.balance} Bytes!'
-				except Exception as e:
-						log.error("Houve erro ao cadastrar novo user: " + e)
+				except UserError as e:
+						LOG.error("Houve erro ao cadastrar novo user: " + e.mensagem)
 						con.rollback()
-						return e
+						raise e
 		
 		"""
 			Para realizar a alteração da Role de um User, o User solicitante (ou seja, o que escreve o comando)
@@ -34,28 +36,28 @@ class UserService:
 				role = role.capitalize()
 				"""Valida se a Role existe registrada"""
 				if not Role.is_valid(role):
-						return f'Função {role} não é válida.'
+						raise UserError(f'Função {role} não é válida.')
 				
 				"""Valida se usuário marcado existe"""
 				usr_updt = self.get_user_from_at_sign(at_sign_user)
 				if usr_updt is None:
-						return f'Usuário {at_sign_user} não encontrado!'
+						raise UserError(f'Usuário {at_sign_user} não encontrado!')
 				
 				requesting_user = self.get_user_from_interaction(interaction)
 				
 				if usr_updt.id_discord == requesting_user.id_discord:
-						return "Você não pode alterar a sua própria função!"
+						raise UserError("Você não pode alterar a sua própria função!")
 				
 				comparison = User.compare_roles(requesting_user.role, usr_updt.role)
 				
 				"""Valida se o Usuario que gerou o comando tem Role maior ao que vai alterar"""
 				if "council" not in requesting_user.role.split(','):
 						if comparison < 0:
-								return "Você não tem autorização para alterar função deste usuário"
+								raise AdminError("Você não tem autorização para alterar função deste usuário")
 						
 						compare_future_role = User.compare_roles(requesting_user.role, role)
 						if compare_future_role <= 0:
-								return "Você não pode alterar para uma Função maior ou igual a sua!"
+								raise UserError("Você não pode alterar para uma Função maior ou igual a sua!")
 				
 				try:
 						con = db.open_transaction()
@@ -64,10 +66,10 @@ class UserService:
 						return f'Usuario {usr_updated.username} atualizado com sucesso!'
 				except ValueError as ve:
 						con.rollback()
-						return ve
+						raise UserError(ve)
 				except Exception as e:
 						con.rollback()
-						return f'Não foi possível alterar o Usuário {usr_updt.username}. Fale com os Adm'
+						raise AdminError(f'Não foi possível alterar o Usuário {usr_updt.username}. Fale com os Adm')
 		
 		def save_user(self, id_discord, username):
 				user = User(id_discord=id_discord, username=username, role=Role.Member.name)
@@ -108,6 +110,8 @@ class UserService:
 		def user_is_admin_or_higher(self, interaction) -> bool:
 				user = self.get_user_from_interaction(interaction)
 				if user is not None:
-						return Role.__getitem__(user.role).value >= Role.Admin.value
+						valid =  Role.__getitem__(user.role).value >= Role.Admin.value
+						# LOG.text_highlighted(f"Usuario tem a role {user.role}. Ele é maior ou igual a Admin? {valid}")
+						return valid
 				else:
 						return False

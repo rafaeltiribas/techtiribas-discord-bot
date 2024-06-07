@@ -2,12 +2,14 @@ import discord
 import math
 import db.database_config as db
 import src.functionalities.messages as message
+import src.functionalities.log as LOG
 
 from src.models.evento import Evento, BettingHistory, BettingPayments
 from datetime import datetime
 from src.services.user_service import UserService
 from src.services.wallet_service import WalletService
 from src.exceptions.bot_errors import UserError
+
 
 user_service = UserService()
 wallet_service = WalletService()
@@ -56,7 +58,7 @@ class EventoService:
 						option_winner_name = evento.option_b
 						
 				bettings_that_won = list(BettingHistory.selectBy(evento=evento, option_selected=option_winner_name))
-				log.info_highlighted(f"Total de usuários vencedores no evento {evento.id} : {len(bettings_that_won)}")
+				LOG.info_highlighted(f"Total de usuários vencedores no evento {evento.id} : {len(bettings_that_won)}")
 				
 				if vencedor == "A":
 						odd_winner = evento.odds_a
@@ -102,6 +104,9 @@ class EventoService:
 				evento = Evento.selectBy(id=id).getOne(None)
 				if evento is None:
 						raise UserError(f"HÃN??? QUE EVENTO DE ID {id} É ESSE ??? EXISTE??")
+				
+				if evento.status == "FECHADA":
+						raise UserError(f"O evento #{evento.id} já foi FECHADO!")
 				
 				return evento
 				

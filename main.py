@@ -24,6 +24,7 @@ database_config.init_db()
 database_config.create_tables()
 
 bank = BotBankService()
+
 interactions = UserInteractionsService()
 interactions.init_bank()
 interactions.start_schedules()

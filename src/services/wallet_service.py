@@ -28,7 +28,7 @@ class WalletService:
 				con.commit()
 				return msg
 		
-		def get_user_wallet(self, user):
+		def get_user_wallet(self, user) -> Wallet:
 				return Wallet.selectBy(user=user).getOne(None)
 			
 		

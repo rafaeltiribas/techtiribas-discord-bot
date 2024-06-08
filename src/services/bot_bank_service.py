@@ -1,21 +1,24 @@
 from src.models.bot_bank import BotBank
 
 from src.services.jobs_service import JobsService
+from src.services.wallet_service import WalletService
 from src.models.wallet import Wallet
+from src.models.user_interactions import UserInteractionsHistory
 from src.models.user import Role
 from src.services.user_service import UserService
 
 import src.functionalities.log as LOG
 
 
-
 class BotBankService:
 		user_service = UserService()
 		jobs_service = JobsService()
+		wallet_service = WalletService()
+		
 		def __init__(self):
 				self.init_bank()
 				self.start_taxes_scheduler()
-				
+		
 		def init_bank(self):
 				self.bank = BotBank.select().getOne(None)
 				if self.bank is None:
@@ -28,12 +31,16 @@ class BotBankService:
 				self.jobs_service.new_job("diary_prizes", self.bank.cron_execute_daily_prize, self.execute_daily_prize)
 		
 		def execute_diary_tax_in_wallets(self):
-				LOG.info(f'Rendendo {self.bank.diary_tax} em todas as Wallets')
+				LOG.info(f'Rendendo {self.bank.diary_tax}% em todas as Wallets')
 				for w in Wallet.select():
 						w.balance = round(w.balance + ((self.bank.diary_tax / 100) * w.balance), 2)
 		
 		def execute_daily_prize(self):
-				LOG.info(f'Iniciar a premiação diária')
+				LOG.info(f'Iniciar a premiação diária de B$ {self.bank.daily_prize} para os usuários que interagiram')
+				for user_interact in UserInteractionsHistory.select():
+						user = user_interact.user
+						wallet = self.wallet_service.get_user_wallet(user)
+						wallet.balance += round(self.bank.daily_prize, 2)
 		
 		def alter_diary_tax(self, ctx, new_tax, new_cron):
 				user = self.user_service.get_user_by_ctx(ctx)

@@ -3,7 +3,7 @@ from src.models.user import User
 import src.functionalities.cron_expressions as cron_exp
 from datetime import datetime
 from src.services.jobs_service import JobsService
-
+import src.functionalities.log as LOG
 
 class UserInteractionsService:
 	
@@ -13,7 +13,7 @@ class UserInteractionsService:
 		self.user_interaction_config = UserInteractions.select().getOne(None)
 		if self.user_interaction_config is None:
 			cron = "0 3 * * *"
-			log.info(f'Configuracao de limpeza de interacoes do usuário criada e marcada para {cron_exp.get_datetime(cron)}')
+			LOG.info(f'Configuracao de limpeza de interacoes do usuário criada e marcada para {cron_exp.get_datetime(cron)}')
 			self.user_interaction_config = UserInteractions(
 				cron_execute_periodic_cleaning=cron
 			)
@@ -46,4 +46,4 @@ class UserInteractionsService:
 	
 	def realize_periodic_cleaning(self):
 		UserInteractionsHistory.deleteMany(None)
-		log.info_highlighted("Limpeza de interacoes dos usuários foram feitas com sucesso")
+		LOG.info_highlighted("Limpeza de interacoes dos usuários foram feitas com sucesso")

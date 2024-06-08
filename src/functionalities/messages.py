@@ -86,16 +86,21 @@ async def send_embed_msg(interaction, embed_message, only_author_can_see=True):
 		await interaction.response.send_message(embed=embed_message, ephemeral=only_author_can_see)
 
 
-async def send_embed_with_img_to_ctx(ctx, embed_message, *path_nodes, only_author_can_see=True) -> None:
+async def send_embed_with_img_in_ctx(ctx, embed_message, *path_nodes, only_author_can_see=True) -> None:
 		picture = gifs.get_discord_file(path_nodes)
-		embed_message.set_image(url=f"attachment://{picture.filename}")
-		await ctx.send(embed=embed_message, file=picture, ephemeral=only_author_can_see)
-
+		if picture is not None:
+				embed_message.set_image(url=f"attachment://{picture.filename}")
+				await ctx.send(embed=embed_message, file=picture, ephemeral=only_author_can_see)
+		else:
+				await ctx.send(embed=embed_message, ephemeral=only_author_can_see)
 
 async def send_embed_with_img(interaction, embed_message, *path_nodes, only_author_can_see=True) -> None:
 		picture = gifs.get_discord_file(*path_nodes)
-		embed_message.set_image(url=f"attachment://{picture.filename}")
-		await interaction.response.send_message(embed=embed_message, file=picture, ephemeral=only_author_can_see)
+		if picture is not None:
+				embed_message.set_image(url=f"attachment://{picture.filename}")
+				await interaction.response.send_message(embed=embed_message, file=picture, ephemeral=only_author_can_see)
+		else:
+				await interaction.response.send_message(embed=embed_message, ephemeral=only_author_can_see)
 
 
 async def send_msg_whom_interacted(interaction, msg, only_author_can_see=True) -> None:

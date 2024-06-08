@@ -27,8 +27,11 @@ class Assets():
 				if archive:
 						abs_path = os.path.join(dir_path, archive + ".gif")
 				else:
-						selected_value = random.choice(node_value)
-						abs_path = os.path.join(dir_path, selected_value + ".gif")
+						try:
+								selected_value = random.choice(node_value)
+								abs_path = os.path.join(dir_path, selected_value + ".gif")
+						except IndexError:
+								return None
 				
 				if not os.path.isfile(abs_path):
 						raise FileNotFoundError(f"Arquivo não encontrado: {abs_path}")
@@ -40,7 +43,8 @@ class Assets():
 						config = self._load_paths()
 						node_value = self._get_node_value(config.assets, *path_segments)
 						abs_path = self._get_file_path(node_value, archive)
-						
+						if abs_path is None:
+								return None
 						with open(abs_path, 'rb') as f:
 								return discord.File(f, filename=os.path.basename(abs_path))
 				except FileNotFoundError as fe:

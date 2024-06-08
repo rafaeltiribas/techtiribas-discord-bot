@@ -43,10 +43,10 @@ class TiribasBot(com.Bot):
 				LOG.error_highlighted(error)
 				if isinstance(error, com.errors.CommandNotFound):
 						msg = message.gen_embed_message("Que comando é esse?", error, discord.Color.red())
-						await message.send_embed_with_img_to_ctx(ctx, msg, "errors", "user", True)
+						await message.send_embed_with_img_in_ctx(ctx, msg, "errors", "user", True)
 				elif isinstance(error, com.errors.CommandError):
 						msg = message.gen_embed_message("Deu ruim...", error, discord.Color.red())
-						await message.send_embed_with_img_to_ctx(ctx, msg, "errors", "user", True)
+						await message.send_embed_with_img_in_ctx(ctx, msg, "errors", "user", True)
 
 
 bot = TiribasBot(command_prefix='/', intents=intents)

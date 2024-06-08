@@ -7,6 +7,7 @@ from src.models.evento import Evento
 
 gifs = Assets()
 
+
 def gen_embed_message(
 		title: str,
 		description: str,
@@ -49,6 +50,7 @@ def gen_embed_message(
 		
 		return embed_msg
 
+
 async def announce_event(interaction, evt: Evento):
 		fields = {
 				"Status do Evento:": {"value": f"{evt.status}", "inline": True},
@@ -65,22 +67,24 @@ async def announce_event(interaction, evt: Evento):
 				color=discord.Color.yellow(),
 				fields=fields
 		)
-		await send_embed_with_img(interaction, embed, "evento", "category" ,f"{evt.category}", only_author_can_see=False)
+		await send_embed_with_img(interaction, embed, "evento", "category", f"{evt.category}", only_author_can_see=False)
 
 
 async def send_user_error_msg(interaction, error, only_author_can_see=True):
 		msg = gen_embed_message(mensagens_inspiradoras(), error, discord.Color.red(), footer=mensagens_inspiradoras())
-		await send_embed_with_img(interaction, msg, "errors","user", only_author_can_see=only_author_can_see)
+		await send_embed_with_img(interaction, msg, "errors", "user", only_author_can_see=only_author_can_see)
 
 
 async def send_std_error_msg(interaction, error, only_author_can_see=True):
-		msg = gen_embed_message("Ops! Aconteceu algo ruim...", error, discord.Color.red())
-		await send_embed_with_img(interaction, msg, "errors","internal_error", only_author_can_see=only_author_can_see)
+		msg = gen_embed_message(title="Ops! Deu super ruim!", description=error, color=discord.Color.red(),
+		                        footer="Deu pau no bot, avise os adm")
+		await send_embed_with_img(interaction, msg, "errors", "internal_error", only_author_can_see=only_author_can_see)
 
 
 async def send_admin_error_msg(interaction, error, only_author_can_see=True):
 		msg = gen_embed_message("Ops! Deu ruim ein...", error, discord.Color.red())
 		await send_embed_with_img(interaction, msg, "errors", "admin", only_author_can_see=only_author_can_see)
+
 
 async def send_embed_msg(interaction, embed_message, only_author_can_see=True):
 		await interaction.response.send_message(embed=embed_message, ephemeral=only_author_can_see)
@@ -93,6 +97,7 @@ async def send_embed_with_img_in_ctx(ctx, embed_message, *path_nodes, only_autho
 				await ctx.send(embed=embed_message, file=picture, ephemeral=only_author_can_see)
 		else:
 				await ctx.send(embed=embed_message, ephemeral=only_author_can_see)
+
 
 async def send_embed_with_img(interaction, embed_message, *path_nodes, only_author_can_see=True) -> None:
 		picture = gifs.get_discord_file(*path_nodes)

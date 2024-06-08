@@ -49,13 +49,14 @@ class AdminCommands(com.Cog):
 				except UserError as ue:
 						await message.send_user_error_msg(interaction, ue)
 		
-		@admin.command(name='iniciar_jobs', description="Inicia todos os jobs do bot")
-		async def start_jobs(self, interaction: discord.Interaction):
+		@admin.command(name='jobs', description="Lista todos os bots")
+		async def list_all_jobs(self, interaction: discord.Interaction):
 				try:
-						msg = jobs_service.start_jobs(interaction)
+						fields = jobs_service.list_jobs(interaction)
 						embed = message.gen_embed_message(
-								title="Jobs iniciados",
-								description=msg,
+								title="Jobs em execução",
+								description="Se liga nos jobs...",
+								fields=fields,
 								color=discord.Color.blurple()
 						)
 						await message.send_embed_with_img(interaction, embed, "staff", "admin")

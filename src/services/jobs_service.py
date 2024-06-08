@@ -16,6 +16,7 @@ import src.functionalities.log as LOG
 
 user_service = UserService()
 
+
 class JobsService:
 		
 		def __init__(self):
@@ -34,25 +35,12 @@ class JobsService:
 				trigger = CronTrigger.from_crontab(cron_expression)
 				if self.scheduler.get_job(job_id) is None:
 						try:
-								job = self.scheduler.add_job(func=def_to_execute, trigger=trigger, id=job_id)
-								LOG.info(f'Novo job registrado para execução: {job.id}')
-						except SchedulerAlreadyRunningError as se:
-								LOG.warn(f"Já existe um job '{job_id}' em execução.")
+								self.scheduler.add_job(func=def_to_execute, trigger=trigger, id=job_id)
+								self.scheduler.start()
+						except SchedulerAlreadyRunningError:
+								pass
 		
-		def start_jobs(self, interaction : discord.Interaction):
-				self.validate_if_user_can_manage_jobs(interaction)
-				try:
-						self.scheduler.start()
-						LOG.info("Jobs iniciados...")
-						return "Iniciado todos os jobs"
-				except SchedulerAlreadyRunningError as se:
-						LOG.warn(f"Houve um erro ao tentar iniciar jobs: {se}")
-						raise AdminError(f"Jobs já foram iniciados!")
-				except Exception as e:
-						LOG.error(f"Erro interno ao iniciar jobs: {e}")
-						raise e
-		
-		def get_especific_job(self, interaction : discord.Interaction, job_id):
+		def get_especific_job(self, interaction: discord.Interaction, job_id):
 				self.validate_if_user_can_manage_jobs(interaction)
 				job = self.scheduler.get_job(job_id)
 				msg = f"Não foi encontrado o job '{job_id}'"
@@ -62,21 +50,29 @@ class JobsService:
 				LOG.text_highlighted(msg)
 				return msg
 		
-		def get_job(self, interaction : discord.Interaction, job_id):
+		def get_job(self, interaction: discord.Interaction, job_id):
 				self.validate_if_user_can_manage_jobs(interaction)
 				return self.scheduler.get_job(job_id)
 		
-		def list_jobs(self):
+		def list_jobs(self, interaction: discord.Interaction):
+				self.validate_if_user_can_manage_jobs(interaction)
+				
 				jobs = self.scheduler.get_jobs()
+				fields = {}
 				if len(jobs) > 0:
-						LOG.info_highlighted("Lista de Jobs rodando atualmente:")
 						for job in jobs:
-								LOG.info(f"ID: {job.id}, Função a ser executada: {job.func.__name__}, Próxima Execução: {job.next_run_time}")
+								fields[f"#{job.id}"] = {
+										"value": f"Função a ser executada: {job.func.__name__}\nPróxima Execução: {job.next_run_time}",
+										"inline": True
+								}
 				else:
-						LOG.info("Não há jobs em execução")
-				return jobs
+						fields["Sem jobs"] = {
+								"value": "Não há jobs sendo executados",
+								"inline": False
+						}
+				return fields
 		
-		def kill_job(self, interaction : discord.Interaction, job_id):
+		def kill_job(self, interaction: discord.Interaction, job_id):
 				self.validate_if_user_can_manage_jobs(interaction)
 				try:
 						self.scheduler.remove_job(job_id)
@@ -92,6 +88,6 @@ class JobsService:
 				LOG.info(msg)
 				return msg
 		
-		def validate_if_user_can_manage_jobs(self, interaction : discord.Interaction):
+		def validate_if_user_can_manage_jobs(self, interaction: discord.Interaction):
 				if not user_service.user_is_admin_or_higher(interaction):
 						raise UserError("Você não tem autorização para fazer isso!")

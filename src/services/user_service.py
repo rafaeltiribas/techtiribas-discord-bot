@@ -1,9 +1,11 @@
+import discord
 from src.models.user import User, Role
 from src.models.wallet import Wallet
 from src.exceptions.bot_errors import UserError, AdminError
 from src.models.transaction_history import TransactionHistory, TransactionType
 import src.functionalities.log as LOG
 import db.database_config as db
+import src.functionalities.messages as message
 
 
 class UserService:
@@ -51,7 +53,7 @@ class UserService:
 				comparison = User.compare_roles(requesting_user.role, usr_updt.role)
 				
 				"""Valida se o Usuario que gerou o comando tem Role maior ao que vai alterar"""
-				if "council" not in requesting_user.role.split(','):
+				if "Council" not in requesting_user.role:
 						if comparison < 0:
 								raise AdminError("Você não tem autorização para alterar função deste usuário")
 						
@@ -63,7 +65,16 @@ class UserService:
 						con = db.open_transaction()
 						usr_updated = self.update_user(usr_updt, role)
 						con.commit()
-						return f'Usuario {usr_updated.username} atualizado com sucesso!'
+
+						embed = message.gen_embed_message(
+								title=f"Usuário foi alterado!",
+								description=f"Deu bom meu bacano",
+								color=discord.Color.brand_green(),
+						)
+						embed.add_field(name="Usuário alterado", value=f"<@{usr_updated.id_discord}>", inline=True)
+						embed.add_field(name="Novo Cargo:", value=role, inline=True)
+						
+						return embed
 				except ValueError as ve:
 						con.rollback()
 						raise UserError(ve)
@@ -110,7 +121,7 @@ class UserService:
 		def user_is_admin_or_higher(self, interaction) -> bool:
 				user = self.get_user_from_interaction(interaction)
 				if user is not None:
-						valid =  Role.__getitem__(user.role).value >= Role.Admin.value
+						valid = Role.__getitem__(user.role).value >= Role.Admin.value
 						# LOG.text_highlighted(f"Usuario tem a role {user.role}. Ele é maior ou igual a Admin? {valid}")
 						return valid
 				else:

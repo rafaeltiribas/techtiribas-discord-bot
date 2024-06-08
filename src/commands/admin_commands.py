@@ -74,7 +74,7 @@ class AdminCommands(com.Cog):
 		async def update_role_user(self, interaction: discord.Interaction, username: str, role: str):
 				try:
 						msg_resp = user_service.update_user_role(interaction, username, role)
-						await message.send_embed_msg(interaction, msg_resp)
+						await message.send_embed_with_img(interaction, msg_resp, "staff", "alterar_funcao")
 				except UserError as ue:
 						await message.send_user_error_msg(interaction, ue)
 				except AdminError as ae:

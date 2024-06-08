@@ -3,7 +3,9 @@ from src.services.user_interactions_service import UserInteractionsService
 from src.models.wallet import Wallet
 from src.exceptions.bot_errors import UserError
 import db.database_config as db
+import locale
 
+locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 
 class WalletService:
 		user_service = UserService()
@@ -17,7 +19,7 @@ class WalletService:
 						raise UserError("Você não está cadastrado, como que quer ter saldo de bytes???")
 				
 				user_wallet = Wallet.selectBy(user=user).getOne(None)
-				msg = f'B$ {user_wallet.balance}.'
+				msg = f'**B$ {self._format_float_to_money(user_wallet.balance)}**'
 				
 				interacted = self.user_inter_service.has_already_interacted(user)
 				if not interacted:
@@ -57,7 +59,7 @@ class WalletService:
 				user_wallet = Wallet.selectBy(user=user).getOne(None)
 				if user_wallet.balance < float(value):
 						con.rollback()
-						raise UserError(f"Você não tem bytes suficientes para transferir B$ {value}!")
+						raise UserError(f"Você não tem bytes suficientes para transferir B$ {self._format_float_to_money(value)}!")
 				
 				user_received_wallet = Wallet.selectBy(user=user_who_received).getOne(None)
 				
@@ -66,4 +68,7 @@ class WalletService:
 				
 				con.commit()
 				
-				return f"Transferência de B$ {value} realizada com sucesso!"
+				return f"Transferência de B$ {self._format_float_to_money(value)} realizada com sucesso!"
+
+		def _format_float_to_money(self, value):
+				return locale.currency(value, grouping=True).replace("R$ ", "")

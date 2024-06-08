@@ -1,5 +1,6 @@
 import discord
 import math
+import locale
 import db.database_config as db
 import src.functionalities.messages as message
 import src.functionalities.log as LOG
@@ -10,10 +11,10 @@ from src.services.user_service import UserService
 from src.services.wallet_service import WalletService
 from src.exceptions.bot_errors import UserError
 
-
 user_service = UserService()
 wallet_service = WalletService()
 
+locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 
 class EventoService:
 		
@@ -56,7 +57,7 @@ class EventoService:
 						option_winner_name = evento.option_a
 				else:
 						option_winner_name = evento.option_b
-						
+				
 				bettings_that_won = list(BettingHistory.selectBy(evento=evento, option_selected=option_winner_name))
 				LOG.info_highlighted(f"Total de usuários vencedores no evento {evento.id} : {len(bettings_that_won)}")
 				
@@ -83,16 +84,16 @@ class EventoService:
 				embed = message.gen_embed_message(
 						title=f"OS GANHADORES DO EVENTO ID #{evento.id}",
 						description="Só quem tá mandando agora papai... respeita",
-						color = discord.Color.gold(),
+						color=discord.Color.gold(),
 						footer="Evento acabou! Tmj papai é nós!"
 				)
 				
 				for win in winners:
 						embed.add_field(name="Usuário", value=f"<@{win.user.id_discord}>", inline=True)
-						embed.add_field(name="Ganhou B$", value=f"{win.value_won}", inline=True)
-						
-				return embed
+						embed.add_field(name="Ganhou B$", value=f"B$ {self._format_float_to_money(win.value_won)}", inline=True)
 				
+				return embed
+		
 		def get_event_to_announce(self, interaction: discord.Interaction, id) -> Evento:
 				user = user_service.get_user_from_interaction(interaction)
 				if user is None:
@@ -109,7 +110,7 @@ class EventoService:
 						raise UserError(f"O evento #{evento.id} já foi FECHADO!")
 				
 				return evento
-				
+		
 		def betting_on(self, interaction: discord.Interaction, id, opcao, bytes) -> dict:
 				if bytes <= 0:
 						raise UserError(f"me explica COMO QUE VOCE VAI APOSTAR B$ {bytes} ????")
@@ -134,7 +135,7 @@ class EventoService:
 				
 				bet = BettingHistory.selectBy(user_who_bet=user, evento=evento).getOne(None)
 				if bet is not None:
-						raise UserError(f"Você já fez sua fézinha de B$ {bet.amount_bet} no {bet.option_selected}")
+						raise UserError(f"Você já fez sua fézinha de B$ {self._format_float_to_money(bet.amount_bet)} no {bet.option_selected}")
 				
 				wallet = wallet_service.get_user_wallet(user)
 				if bytes > wallet.balance:
@@ -158,15 +159,14 @@ class EventoService:
 				con.commit()
 				
 				return {
-						"Valor apostado:": {"value": f"B$ {round(bytes, 2)}", "inline": True},
+						"Valor apostado:": {"value": f"B$ {self._format_float_to_money(round(bytes, 2))}", "inline": True},
 						"Apostou no:": {"value": option_selected, "inline": True}
 				}
 		
-		
 		def _create_msg_close_bets(self, evt: Evento):
 				fields = {
-						"Sobre apostas:" : {"value" : self._info_about_media_on_historic_values(evt), "inline": True},
-						"Total de bets:" : {"value" : (evt.total_bets_a + evt.total_bets_b), "inline": True}
+						"Sobre apostas:": {"value": self._info_about_media_on_historic_values(evt), "inline": True},
+						"Total de bets:": {"value": (evt.total_bets_a + evt.total_bets_b), "inline": True}
 				}
 				embed = message.gen_embed_message(
 						title=f"ID[#{evt.id}] {evt.title}",
@@ -193,8 +193,7 @@ class EventoService:
 						return f"HISTÓRICO! Esse é o novo recorde de apostas na categoria {evento.category}"
 				else:
 						return f"Total de apostas foi acima da média para categoria {evento.category}"
-				
-				
+		
 		def _smooth_probability(self, bytes):
 				return math.log(bytes + 1, 10)
 		
@@ -213,3 +212,6 @@ class EventoService:
 						return evento.option_a
 				else:
 						return evento.option_b
+		
+		def _format_float_to_money(self, value):
+				return locale.currency(value, grouping=True).replace("R$ ", "")

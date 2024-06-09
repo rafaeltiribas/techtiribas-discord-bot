@@ -16,6 +16,7 @@ wallet_service = WalletService()
 
 locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 
+
 class EventoService:
 		
 		def create_event(self, interaction: discord.Interaction, title: str, category: str, option_a: str, option_b: str):
@@ -89,6 +90,7 @@ class EventoService:
 				)
 				
 				for win in winners:
+						embed.add_field(name="Vencedor do Evento:", value=f"**{vencedor}: {option_winner_name}**", inline=False)
 						embed.add_field(name="Usuário", value=f"<@{win.user.id_discord}>", inline=True)
 						embed.add_field(name="Ganhou B$", value=f"B$ {self._format_float_to_money(win.value_won)}", inline=True)
 				
@@ -135,7 +137,8 @@ class EventoService:
 				
 				bet = BettingHistory.selectBy(user_who_bet=user, evento=evento).getOne(None)
 				if bet is not None:
-						raise UserError(f"Você já fez sua fézinha de B$ {self._format_float_to_money(bet.amount_bet)} no {bet.option_selected}")
+						raise UserError(
+								f"Você já fez sua fézinha de B$ {self._format_float_to_money(bet.amount_bet)} no {bet.option_selected}")
 				
 				wallet = wallet_service.get_user_wallet(user)
 				if bytes > wallet.balance:
